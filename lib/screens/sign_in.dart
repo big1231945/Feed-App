@@ -1,13 +1,53 @@
 // ignore_for_file: unused_element, prefer_typing_uninitialized_variables, avoid_print, prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:feed_app/database/database_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '../stroage.dart';
 import 'menu.dart';
 
+class UserNameStorage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/UserName2.txt');
+  }
+
+  Future<String> readUeserName() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+
+      return contents;
+    } catch (e) {
+      // If encountering an error, return 0
+      return 'nooo';
+    }
+  }
+
+  Future<File> writeUeserName(String usernameSeve) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString(usernameSeve);
+  }
+}
+
 class SignIn extends StatefulWidget {
+  const SignIn({Key? key, required this.storage}) : super(key: key);
+  final UserNameStorage storage;
   @override
   _SignInState createState() => _SignInState();
 }
@@ -15,8 +55,10 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
 //Explicit
 
+  String _usernameSeve = '';
+
   final userformkey = GlobalKey<FormState>();
-  late String usernameString, passwordString;
+  var usernameString, passwordString;
   final dbhelper = DatabaseHelper.instance;
 
   final DatabaseReference db = FirebaseDatabase(
@@ -26,60 +68,6 @@ class _SignInState extends State<SignIn> {
   var mapdata;
 
 //Method
-
-  // signIn() {
-  //   _auth
-  //       .signInWithEmailAndPassword(
-  //           email: 'thanakorn.deceloper@gmail.com', password: '123456')
-  //       .then((user) {
-  //     print('siged in $user');
-  //   }).catchError((error) {
-  //     print('error');
-  //   });
-  // }
-
-  void _update() async {
-    // row to update
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnId   : 1,
-      DatabaseHelper.columnName : usernameString,
-      DatabaseHelper.columnAge  : passwordString
-    };
-    final rowsAffected = await dbhelper.update(row);
-    print('updated $rowsAffected row(s)');
-  }
-
-
-  void _delete() async {
-    // Assuming that the number of rows is the id for the last row.
-    final id = await dbhelper.queryRowCount();
-    final rowsDeleted = await dbhelper.delete(id!);
-    print('deleted $rowsDeleted row(s): row $id');
-  }
-   void _view() async {
-    // Assuming that the number of rows is the id for the last row.
-    final id = await dbhelper.queryRowCount();
-    final rowsDeleted = await dbhelper.queryAllRows();
-    print('deleted $rowsDeleted row(s): row $id');
-  }
-
-  void _query() async {
-    final allRows = await dbhelper.queryAllRows();
-    print('query all rows:');
-    allRows.forEach(print);
-  }
-
-  void _insert() async {
-    // row to insert
-    Map<String, dynamic> row = {
-      DatabaseHelper.columnName : usernameString,
-      DatabaseHelper.columnAge  : passwordString
-    };
-    final id = await dbhelper.insert(row);
-    print('inserted row id: $id');
-  }
-
-
   Future<void> readData() async {
     print('Work!!!');
 
@@ -90,12 +78,12 @@ class _SignInState extends State<SignIn> {
       mapdata = snapshot.value;
     }).onError((error, stackTrace) => null);
 
-    // print(mapdata!);
+    // print('tttttttt   $mapdata');
 
     if (passwordString == mapdata) {
       // print('bin Gooooooooooooooo');
       MaterialPageRoute materialPageRoute =
-          MaterialPageRoute(builder: (BuildContext context) => menu());
+          MaterialPageRoute(builder: (BuildContext context) => menu(storage: ameStorage(),));
       Navigator.of(context).push(materialPageRoute);
     }
   }
@@ -123,7 +111,6 @@ class _SignInState extends State<SignIn> {
     return IconButton(
       icon: Icon(Icons.login),
       onPressed: () {
-        
         // _query();
         // MaterialPageRoute materialPageRoute =
         //     MaterialPageRoute(builder: (BuildContext context) => menu());
@@ -134,27 +121,28 @@ class _SignInState extends State<SignIn> {
           userformkey.currentState!.save();
           print('user = $usernameString, password= $passwordString');
           readData();
-
+          _incrementUsername();
           // _update();
           // _query();
         }
       },
+      tooltip: 'ล็อกอิน',
     );
   }
 
-  Future<void> loginThread() async {
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    await firebaseAuth
-        .createUserWithEmailAndPassword(
-            email: usernameString, password: passwordString)
-        .then((respones) {
-      print('Login OK =$usernameString');
-    }).catchError((response) {
-      String title = response.code;
-      String message = response.message;
-      print('title=$title, message=$message');
-    });
-  }
+  // Future<void> loginThread() async {
+  //   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  //   await firebaseAuth
+  //       .createUserWithEmailAndPassword(
+  //           email: usernameString, password: passwordString)
+  //       .then((respones) {
+  //     print('Login OK =$usernameString');
+  //   }).catchError((response) {
+  //     String title = response.code;
+  //     String message = response.message;
+  //     print('title=$title, message=$message');
+  //   });
+  // }
 
   Widget userNameText() {
     return TextFormField(
@@ -178,6 +166,7 @@ class _SignInState extends State<SignIn> {
       },
       onSaved: (var val) {
         usernameString = val!.trim();
+        _usernameSeve = val.trim();
       },
     );
   }
@@ -209,10 +198,28 @@ class _SignInState extends State<SignIn> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    widget.storage.readUeserName().then((String value) {
+      setState(() {
+        _usernameSeve = value;
+      });
+    });
+  }
+
+  Future<File> _incrementUsername() {
+    setState(() {
+      _usernameSeve;
+    });
+    // Write the variable as a string to the file.
+    return widget.storage.writeUeserName(_usernameSeve);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: Text('Sign In', style: TextStyle(color: Colors.tealAccent)),
         actions: [signInButton()],
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -245,6 +252,7 @@ class _SignInState extends State<SignIn> {
             showAppLogo(),
             userNameText(),
             passwordText(),
+            Text('data $_usernameSeve')
           ],
         ),
       ),

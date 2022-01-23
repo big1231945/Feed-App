@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:feed_app/screens/menu/advice.dart';
 import 'package:feed_app/screens/menu/carmera.dart';
 import 'package:feed_app/screens/menu/setting.dart';
@@ -7,12 +9,51 @@ import 'package:feed_app/screens/menu/sound.dart';
 import 'package:feed_app/screens/menu/start.dart';
 import 'package:flutter/material.dart';
 import 'package:feed_app/utility/constants.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:web_socket_channel/io.dart';
 
+
 class menu extends StatefulWidget {
+  const menu({Key? key, required this.storage}) : super(key: key);
+  final ameStorage storage;
   @override
   _menuState createState() => _menuState();
 }
+
+class ameStorage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/UserName2.txt');
+  }
+
+  Future<String> readUeserName() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+
+      return contents;
+    } catch (e) {
+      // If encountering an error, return 0
+      return 'nooo';
+    }
+  }
+
+  Future<File> writeUeserName(String usernameSeve) async {
+    final file = await _localFile;
+
+    // Write the file
+    return file.writeAsString(usernameSeve);
+  }
+}
+
 
 class RecomendPlantCard extends StatelessWidget {
   const RecomendPlantCard({
@@ -69,6 +110,7 @@ class RecomendPlantCard extends StatelessWidget {
                           text: "$country".toUpperCase(),
                           style: TextStyle(
                             color: kPrimaryColor.withOpacity(0.5),
+                            
                           ),
                         ),
                       ],
@@ -86,7 +128,25 @@ class RecomendPlantCard extends StatelessWidget {
 }
 
 class _menuState extends State<menu> {
+  var _usernameSeve;
+  var nameTag;
+
+  remeber() {
+    return widget.storage.readUeserName().then((String value) {
+      _usernameSeve = value;
+
+    });
+  }
   // Method
+ Widget text1() {
+    return 
+    
+    Text("สวัสดี $_usernameSeve", style: TextStyle(fontSize: 30));
+  }
+  Widget text2() {
+    return Text(" ", style: TextStyle(fontSize: 30));
+  }
+
   Widget manu() {
     return RecomendPlantCard(
       image: "images/4185489.png",
@@ -116,7 +176,7 @@ class _menuState extends State<menu> {
       country: "เริ่มการให้อาหาร",
       press: () {
         MaterialPageRoute materialPageRoute =
-            MaterialPageRoute(builder: (BuildContext context) => Start());
+            MaterialPageRoute(builder: (BuildContext context) => Start(storage: UserNameStorage(),));
         Navigator.of(context).push(materialPageRoute);
       },
     );
@@ -126,7 +186,7 @@ class _menuState extends State<menu> {
     return RecomendPlantCard(
       image: "images/camera-icon-clipart-transparent.png",
       title: "กล้อง",
-      country: "ดูและพูดคุย",
+      country: "สักเกตุการ",
       press: () {MaterialPageRoute materialPageRoute =
             MaterialPageRoute(builder: (BuildContext context) => Carmera(
               channel: IOWebSocketChannel.connect('ws://35.247.189.78:65080'),));
@@ -157,19 +217,31 @@ class _menuState extends State<menu> {
       press: () {},
     );
   }
+   @override
+  void initState() {
+    super.initState();
+    widget.storage.readUeserName().then((value) {
+      setState(() {
+        _usernameSeve = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Menu FeedApp'),
-          actions: [],
+          
+          title: Text('Menu FeedApp',
+          style: TextStyle(color: Colors.tealAccent
+          ),
+          ),
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: <Color>[
+                colors: const <Color>[
                   Colors.cyan,
                   Colors.indigo,
                 ],
@@ -193,7 +265,7 @@ class _menuState extends State<menu> {
                     gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: <Color>[
+                  colors: const <Color>[
                     Colors.cyan,
                     Colors.indigo,
                   ],
@@ -201,19 +273,35 @@ class _menuState extends State<menu> {
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
+                    children: [ 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [manu(), manu2()],
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [text1(),
+                        // manu2()
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [text2(), 
+                        // manu2()
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [manu(), 
+                        // manu2()
+                        ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [manu3(), manu4()],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [manu5()],
-                      )
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [manu5()]
+                      // )
                     ],
                   ),
                 ))));

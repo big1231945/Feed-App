@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:feed_app/screens/sign_in.dart';
+import 'package:feed_app/stroage.dart';
 import 'package:flutter/material.dart';
 class home extends StatefulWidget {
   @override
@@ -38,7 +41,7 @@ class _homeState extends State<home> {
         print('You click sign up');
 
         MaterialPageRoute materialPageRoute =
-            MaterialPageRoute(builder: (BuildContext context) => SignIn());
+            MaterialPageRoute(builder: (BuildContext context) => SignIn(storage: UserNameStorage()));
             Navigator.of(context).push(materialPageRoute);
       },
     );
