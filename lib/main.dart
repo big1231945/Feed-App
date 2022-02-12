@@ -2,7 +2,10 @@
 // import 'package:feed_app/screens/sign_in.dart';
 import 'dart:io';
 
+
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:feed_app/screens/home.dart';
+import 'package:feed_app/screens/sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:feed_app/router.dart';
@@ -12,51 +15,112 @@ import 'screens/menu.dart';
 
 String iniRoute = '/home';
 // final dbhelper = DatabaseHelper.instance;
-class UserNameStorage {
+// class UserNameStorage {
   
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
+//   Future<String> get _localPath async {
+//     final directory = await getApplicationDocumentsDirectory();
 
-    return directory.path;
-  }
+//     return directory.path;
+//   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/UserName2.txt');
-  }
+//   Future<File> get _localFile async {
+//     final path = await _localPath;
+//     return File('$path/UserName2.txt');
+//   }
 
-  Future<String> readUeserName() async {
-    try {
-      final file = await _localFile;
+//   Future<String> readUeserName() async {
+//     try {
+//       final file = await _localFile;
 
-      // Read the file
-      final contents = await file.readAsString();
+//       // Read the file
+//       final contents = await file.readAsString();
 
-      return contents;
-    } catch (e) {
-      // If encountering an error, return 0
-      return 'nooo';
-    }
-  }
+//       return contents;
+//     } catch (e) {
+//       // If encountering an error, return 0
+//       return 'nooo';
+//     }
+//   }
 
-  Future<File> writeUeserName(String usernameSeve) async {
-    final file = await _localFile;
+//   Future<File> writeUeserName(String usernameSeve) async {
+//     final file = await _localFile;
 
-    // Write the file
-    return file.writeAsString(usernameSeve);
-  }
+//     // Write the file
+//     return file.writeAsString(usernameSeve);
+//   }
 
-  var _usernameSeve;
+//   var _usernameSeve;
  
-}
+// }
 
-main() {
-  
-    runApp(MyApp());
-  
+main(){
+   WidgetsFlutterBinding.ensureInitialized();
+   noti().notificationInt();
+   UserNameStorage();
+    runApp(
+      MyApp());
+    
+
   
 }
+class noti extends MyApp {
+  BuildContext get context => null;
 
+
+
+
+void notificationInt()async{
+  await AwesomeNotifications().initialize(
+    'resource://drawable/cat_icon',
+    [
+      NotificationChannel(
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notifications',
+        defaultColor: Colors.orange,
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
+      ),
+      NotificationChannel(
+        channelKey: 'scheduled_channel',
+        channelName: 'Scheduled Notifications',
+        defaultColor: Colors.orange,
+        locked: true,
+        importance: NotificationImportance.High,
+        // soundSource: 'resource://raw/res_custom_notification',
+      ),
+    ],
+  );
+      AwesomeNotifications().createdStream.listen((notification) {
+     
+      
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'Notification Created on ${notification.channelKey}',
+        ),
+      ));
+    });
+ AwesomeNotifications().actionStream.listen((notification) {
+      if (notification.channelKey == 'basic_channel') {
+        AwesomeNotifications().getGlobalBadgeCounter().then(
+              (value) =>
+                  AwesomeNotifications().setGlobalBadgeCounter(value - 1),
+            );
+      }
+
+      
+      
+      Navigator.pushAndRemoveUntil(
+        context,
+        
+        MaterialPageRoute(
+          builder: (context) => menu(storage: UserNameStorage(),),
+        ),
+        (route) => route.isFirst,
+      );
+    });
+  
+}
+}
 // main() {
 //   if (dbhelper.database==1) {
 //     runApp(MyApp());
@@ -115,7 +179,7 @@ class MyApp extends StatelessWidget {
     // }
     return
     MaterialApp(
-      
+      debugShowCheckedModeBanner: false,
       routes: map,
       initialRoute: iniRoute,
       theme: _buildShrineTheme(),

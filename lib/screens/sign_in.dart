@@ -63,7 +63,7 @@ class _SignInState extends State<SignIn> {
 
   final DatabaseReference db = FirebaseDatabase(
           databaseURL:
-              'https://feedapp-1a08d-default-rtdb.asia-southeast1.firebasedatabase.app')
+              'https://feedapp2-default-rtdb.asia-southeast1.firebasedatabase.app')
       .reference();
   var mapdata;
 
@@ -83,7 +83,7 @@ class _SignInState extends State<SignIn> {
     if (passwordString == mapdata) {
       // print('bin Gooooooooooooooo');
       MaterialPageRoute materialPageRoute =
-          MaterialPageRoute(builder: (BuildContext context) => menu(storage: ameStorage(),));
+          MaterialPageRoute(builder: (BuildContext context) => menu(storage: UserNameStorage(),));
       Navigator.of(context).push(materialPageRoute);
     }
   }

@@ -59,6 +59,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -129,11 +130,12 @@ class _CarmeraState extends State<Carmera> {
           newVideoSizeWidth = videoWidth * newVideoSizeHeight / videoHeight;
         }
 
-        return Container(
+        return 
+        Container(
           color: Colors.black,
           child: StreamBuilder(
             stream: widget.channel.stream,
-            builder: (context, snapshot) {
+            builder: (context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
                 return Center(
                   child: CircularProgressIndicator(
@@ -157,12 +159,13 @@ class _CarmeraState extends State<Carmera> {
                                 maxScale: 5.0,
                                 doubleTapScale: 2.0,
                                 duration: Duration(milliseconds: 200),
-                                // child: Image.memory(
-                                //   snapshot.data,
-                                //   gaplessPlayback: true,
-                                //   width: newVideoSizeWidth,
-                                //   height: newVideoSizeHeight,
-                                // ),
+                                child: 
+                                Image.memory(
+                                  snapshot.data,
+                                  gaplessPlayback: true,
+                                  width: newVideoSizeWidth,
+                                  height: newVideoSizeHeight,
+                                ),
                               ),
                             ),
                             Positioned.fill(
@@ -173,7 +176,7 @@ class _CarmeraState extends State<Carmera> {
                                     height: 16,
                                   ),
                                   Text(
-                                    'ESP32\'s cam',
+                                    'กล้องดูแมว',
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w300),
@@ -196,7 +199,7 @@ class _CarmeraState extends State<Carmera> {
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Colors.black,
+                            color: Colors.cyan[200],
                             width: MediaQuery.of(context).size.width,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -205,37 +208,37 @@ class _CarmeraState extends State<Carmera> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  IconButton(
-                                      icon: Icon(
-                                    Icons.videocam,
-                                    size: 24,
-                                  ),
-                                    onPressed: takeScreenShot,),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.photo_camera,
-                                      size: 24,
-                                    ),
-                                    onPressed: takeScreenShot,
-                                  ),
-                                  IconButton(
-                                      icon: Icon(
-                                    Icons.mic,
-                                    size: 24,
-                                  ),
-                                    onPressed: takeScreenShot,),
-                                  IconButton(
-                                      icon: Icon(
-                                    Icons.speaker,
-                                    size: 24,
-                                  ),
-                                    onPressed: takeScreenShot,),
-                                  IconButton(
-                                      icon: Icon(
-                                    Icons.add_alert,
-                                    size: 24,
-                                  ),
-                                    onPressed: takeScreenShot,)
+                                  // IconButton(
+                                  //     icon: Icon(
+                                  //   Icons.videocam,
+                                  //   size: 24,
+                                  // ),
+                                  //   onPressed: takeScreenShot,),
+                                  // IconButton(
+                                  //   icon: Icon(
+                                  //     Icons.photo_camera,
+                                  //     size: 24,
+                                  //   ),
+                                  //   onPressed: takeScreenShot,
+                                  // ),
+                                  // IconButton(
+                                  //     icon: Icon(
+                                  //   Icons.mic,
+                                  //   size: 24,
+                                  // ),
+                                  //   onPressed: takeScreenShot,),
+                                  // IconButton(
+                                  //     icon: Icon(
+                                  //   Icons.speaker,
+                                  //   size: 24,
+                                  // ),
+                                  //   onPressed: takeScreenShot,),
+                                  // IconButton(
+                                  //     icon: Icon(
+                                  //   Icons.add_alert,
+                                  //   size: 24,
+                                  // ),
+                                  //   onPressed: takeScreenShot,)
                                 ],
                               ),
                             ),
