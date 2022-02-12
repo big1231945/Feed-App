@@ -9,6 +9,7 @@ import 'package:feed_app/screens/menu/setting.dart';
 import 'package:feed_app/screens/menu/auto_time.dart';
 import 'package:feed_app/screens/menu/start.dart';
 import 'package:feed_app/screens/sign_in.dart';
+import 'package:feed_app/utility/data_user.dart';
 import 'package:flutter/material.dart';
 import 'package:feed_app/utility/constants.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,6 +40,7 @@ class RecomendPlantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
+      
       margin: EdgeInsets.only(
         left: kDefaultPadding,
         top: kDefaultPadding / 3,
@@ -46,8 +48,14 @@ class RecomendPlantCard extends StatelessWidget {
       ),
       width: size.width * 0.33,
       child: Column(
-        children: <Widget>[
-          Image.asset(image),
+      
+        children: [
+          InkWell(
+            onTap: press,
+            child: Image.asset(image),
+
+          ),
+          
           GestureDetector(
             onTap: press,
             child: Container(

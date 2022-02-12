@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:feed_app/screens/sign_in.dart';
 import 'package:feed_app/stroage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 class home extends StatefulWidget {
   @override
   _homeState createState() => _homeState();
@@ -48,7 +49,9 @@ class _homeState extends State<home> {
   }
 
   Widget outApp() {
-    return OutlineButton(child: Text('Exit'), onPressed: () {});
+    return OutlineButton(child: Text('Exit'), onPressed: () {
+      SystemNavigator.pop();
+    });
   }
 
   Widget showButton() {

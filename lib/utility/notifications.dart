@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:feed_app/utility/data_user.dart';
 import 'package:feed_app/utility/utilities.dart';
 
 Future<void> createPlantFoodNotification() async {
@@ -17,6 +18,7 @@ Future<void> createPlantFoodNotification() async {
 
 Future<void> createWaterReminderNotification(
     NotificationWeekAndTime notificationSchedule) async {
+      // RunBackgorude instance01 = RunBackgorude();
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: createUniqueId(),
@@ -25,20 +27,22 @@ Future<void> createWaterReminderNotification(
       body: 'Water your plant regularly to keep it healthy.',
       notificationLayout: NotificationLayout.Default,
     ),
-    actionButtons: [
-      NotificationActionButton(
-        key: 'MARK_DONE',
-        label: 'Mark Done',
-      ),
-    ],
+    // actionButtons: [
+    //   NotificationActionButton(
+    //     key: 'MARK_DONE',
+    //     label: 'Mark Done',
+    //   ),
+    // ],
     schedule: NotificationCalendar(
-      weekday: notificationSchedule.dayOfTheWeek,
       hour: notificationSchedule.timeOfDay.hour,
       minute: notificationSchedule.timeOfDay.minute,
       second: 0,
       millisecond: 0,
       repeats: true,
     ),
+   
+    
+
   );
 }
 

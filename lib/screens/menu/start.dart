@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:feed_app/utility/data_user.dart';
 import 'package:feed_app/utility/device.dart';
 import 'package:feed_app/utility/netpie.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,22 +16,25 @@ import '../sign_in.dart';
 class Start extends StatefulWidget {
   const Start({Key? key, required this.storage}) : super(key: key);
   final UserNameStorage storage;
-  
+
   @override
   _StartState createState() => _StartState();
 }
 
 class _StartState extends State<Start> {
-@override
+  @override
   void initState() {
     super.initState();
+    remeber();
+    
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: Text('อนุญาตการแจ้งเตือน'),
-            content: Text('ดูเหมือนว่าแอปของคุณยังไม่ได้รับให้มีการแจ้งเตือน โปรดอนุญาตเพื่อเข้าถึงการแจ้งเตือน FeedApp'),
+            content: Text(
+                'ดูเหมือนว่าแอปของคุณยังไม่ได้รับให้มีการแจ้งเตือน โปรดอนุญาตเพื่อเข้าถึงการแจ้งเตือน FeedApp'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -84,10 +88,7 @@ class _StartState extends State<Start> {
 //         (route) => route.isFirst,
 //       );
 //     });
-
   }
-
-
 
   var _usernameSeve;
 
@@ -101,26 +102,24 @@ class _StartState extends State<Start> {
   var mapda;
 
 //Method
-  Future<void> readData() async {
-    print('Work!!!');
 
-    await db.child('/user/run').once().then((DataSnapshot snapshot) {
-      mapdata = snapshot.value;
-    }).onError((error, stackTrace) => null);
-
-    print('OOOOO= $mapdata');
-  }
 
   remeber() {
-    return widget.storage.readUeserName().then((String value) {
+    return widget.storage.readUeserName().then((String value) async {
       _usernameSeve = value;
-      db.child('/user/run/$_usernameSeve').once().then((DataSnapshot snapshot) {
+      await db
+          .child('/user/run/$_usernameSeve')
+          .once()
+          .then((DataSnapshot snapshot) {
         mapda = snapshot.value;
       }).onError((error, stackTrace) => null);
       print(_usernameSeve);
       // print(mapda);
       print('goooooo $mapda');
-    });
+      incrementWebAPI(mapda);
+    }
+    
+    );
   }
 
 //Explicit
@@ -128,7 +127,7 @@ class _StartState extends State<Start> {
     String iMsg,
   ) async {
     Response response = await http.put(
-      Uri.parse(mapda),
+      Uri.parse(await mapda),
       body: iMsg,
     );
     print('Pesponse: ${response.body}');
@@ -145,9 +144,9 @@ class _StartState extends State<Start> {
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
-
-        publish('auto cat feed 10');
         remeber();
+        publish('auto cat feed 10');
+        
       },
     );
   }
@@ -159,11 +158,10 @@ class _StartState extends State<Start> {
         'ให้อาหาร 20 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
+      onPressed: () async{
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
-
         publish('auto cat feed 20');
         remeber();
       },
@@ -230,6 +228,7 @@ class _StartState extends State<Start> {
   }
 
   @override
+  
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -278,6 +277,7 @@ class _StartState extends State<Start> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [button5()],
                     ),
+                    
                   ],
                 ),
               ))),

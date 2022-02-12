@@ -1,11 +1,13 @@
 // @dart=2.9
 // import 'package:feed_app/screens/sign_in.dart';
-import 'dart:io';
 
+import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:feed_app/screens/home.dart';
 import 'package:feed_app/screens/sign_in.dart';
+import 'package:feed_app/utility/data_user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:feed_app/router.dart';
@@ -16,7 +18,7 @@ import 'screens/menu.dart';
 String iniRoute = '/home';
 // final dbhelper = DatabaseHelper.instance;
 // class UserNameStorage {
-  
+
 //   Future<String> get _localPath async {
 //     final directory = await getApplicationDocumentsDirectory();
 
@@ -50,56 +52,48 @@ String iniRoute = '/home';
 //   }
 
 //   var _usernameSeve;
- 
+
 // }
 
-main(){
-   WidgetsFlutterBinding.ensureInitialized();
-   noti().notificationInt();
-   UserNameStorage();
-    runApp(
-      MyApp());
-    
-
-  
+main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  noti().notificationInt();
+  UserNameStorage();
+  runApp(MyApp());
 }
+
 class noti extends MyApp {
   BuildContext get context => null;
 
-
-
-
-void notificationInt()async{
-  await AwesomeNotifications().initialize(
-    'resource://drawable/cat_icon',
-    [
-      NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic Notifications',
-        defaultColor: Colors.orange,
-        importance: NotificationImportance.High,
-        channelShowBadge: true,
-      ),
-      NotificationChannel(
-        channelKey: 'scheduled_channel',
-        channelName: 'Scheduled Notifications',
-        defaultColor: Colors.orange,
-        locked: true,
-        importance: NotificationImportance.High,
-        // soundSource: 'resource://raw/res_custom_notification',
-      ),
-    ],
-  );
-      AwesomeNotifications().createdStream.listen((notification) {
-     
-      
+  void notificationInt() async {
+    await AwesomeNotifications().initialize(
+      'resource://drawable/cat_icon',
+      [
+        NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Basic Notifications',
+          defaultColor: Colors.teal,
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
+        ),
+        NotificationChannel(
+          channelKey: 'scheduled_channel',
+          channelName: 'Scheduled Notifications',
+          defaultColor: Colors.teal,
+          // locked: true,
+          importance: NotificationImportance.High,
+          // soundSource: 'resource://raw/res_custom_notification',
+        ),
+      ],
+    );
+    AwesomeNotifications().createdStream.listen((notification) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           'Notification Created on ${notification.channelKey}',
         ),
       ));
     });
- AwesomeNotifications().actionStream.listen((notification) {
+    AwesomeNotifications().actionStream.listen((notification) {
       if (notification.channelKey == 'basic_channel') {
         AwesomeNotifications().getGlobalBadgeCounter().then(
               (value) =>
@@ -107,19 +101,17 @@ void notificationInt()async{
             );
       }
 
-      
-      
       Navigator.pushAndRemoveUntil(
         context,
-        
         MaterialPageRoute(
-          builder: (context) => menu(storage: UserNameStorage(),),
+          builder: (context) => menu(
+            storage: UserNameStorage(),
+          ),
         ),
         (route) => route.isFirst,
       );
     });
-  
-}
+  }
 }
 // main() {
 //   if (dbhelper.database==1) {
@@ -132,60 +124,57 @@ void notificationInt()async{
 //     };
 // }
 
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({Key key, this.storage}) : super(key: key);
+  final UserNameStorage storage;
+
+  Future<String> checkUserAndNavigate(BuildContext context) async {
+    return loadUsernameData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    checkUserAndNavigate(context).then((res) {
+      if (res.isEmpty) {
+        Navigator.pushNamed(context, '/home');
+      } else {
+        Navigator.pushNamed(context, '/menu');
+      }
+    });
+
+    return new Scaffold(
+      body: new Card(
+          child: new Center(
+        child: new Text('กดอีกครั้งเพื่อออกจากแอป...',
+            style: new TextStyle(
+                fontSize: 24.00,
+                fontWeight: FontWeight.bold,
+                color: Colors.indigo)),
+      )),
+    );
+  }
+}
+
 class MyApp extends StatelessWidget {
-//  MyApp({Key key, this.storage}) : super(key: key);
-//   final UserNameStorage storage;
-//   final DatabaseReference db = FirebaseDatabase(
-//           databaseURL:
-//               'https://feedapp-1a08d-default-rtdb.asia-southeast1.firebasedatabase.app')
-//       .reference();
-//   var mapdata;
-//   var mapda;
-//   var _usernameSeve ;
-//   remeber() {
-//     var widget;
-//     return widget.storage.readUeserName().then((String value) {
-//       _usernameSeve = value;
-//       db.child('/user/run/$_usernameSeve').once().then((DataSnapshot snapshot) {
-//         mapda = snapshot.value;
-//       }).onError((error, stackTrace) => null);
-//       print(_usernameSeve);
-//       // print(mapda);
-//      print('goooooo $mapda');
-//     });
-//   }
-
-//   Future<void> readData() async {
-//     print('Work!!!');
-
-//     await db.child('/user/nameTag/$_usernameSeve').once().then((DataSnapshot snapshot) {
-//       mapdata = snapshot.value;
-//     }).onError((error, stackTrace) => null);
-
-//     print(mapdata);
-//     if (_usernameSeve == mapdata) {
-//       // print('bin Gooooooooooooooo');
-//       MaterialApp(
-//       home:menu()
-//       );
-//     }
-    
-//     MaterialApp(home: home(),);
-//   }
-   
   @override
   Widget build(BuildContext context) {
     // readData();
     // }
-    return
-    MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      routes: map,
+      home: SplashScreen(
+        storage: UserNameStorage(),
+      ),
+      routes: {
+        '/home': (context) => home(),
+        '/menu': (context) => menu(storage: UserNameStorage()),
+      },
       initialRoute: iniRoute,
       theme: _buildShrineTheme(),
     );
   }
 }
+
 ThemeData _buildShrineTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(

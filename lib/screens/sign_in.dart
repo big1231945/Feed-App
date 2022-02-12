@@ -3,10 +3,12 @@
 import 'dart:io';
 
 import 'package:feed_app/database/database_helper.dart';
+import 'package:feed_app/utility/data_user.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../stroage.dart';
 import 'menu.dart';
@@ -45,6 +47,11 @@ class UserNameStorage {
   }
 }
 
+  
+
+  
+
+
 class SignIn extends StatefulWidget {
   const SignIn({Key? key, required this.storage}) : super(key: key);
   final UserNameStorage storage;
@@ -82,6 +89,7 @@ class _SignInState extends State<SignIn> {
 
     if (passwordString == mapdata) {
       // print('bin Gooooooooooooooo');
+      incrementUsernameData(usernameString);
       MaterialPageRoute materialPageRoute =
           MaterialPageRoute(builder: (BuildContext context) => menu(storage: UserNameStorage(),));
       Navigator.of(context).push(materialPageRoute);
@@ -108,6 +116,7 @@ class _SignInState extends State<SignIn> {
   }
 
   Widget signInButton() {
+    
     return IconButton(
       icon: Icon(Icons.login),
       onPressed: () {
@@ -122,6 +131,10 @@ class _SignInState extends State<SignIn> {
           print('user = $usernameString, password= $passwordString');
           readData();
           _incrementUsername();
+          
+          
+          
+
           // _update();
           // _query();
         }

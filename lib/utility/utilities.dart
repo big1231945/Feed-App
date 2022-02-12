@@ -1,66 +1,71 @@
+import 'package:feed_app/utility/data_user.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 int createUniqueId() {
   return DateTime.now().millisecondsSinceEpoch.remainder(100000);
 }
 
 class NotificationWeekAndTime {
-  final int dayOfTheWeek;
   final TimeOfDay timeOfDay;
 
+
   NotificationWeekAndTime({
-    required this.dayOfTheWeek,
     required this.timeOfDay,
   });
 }
+final DatabaseReference db = FirebaseDatabase(
+          databaseURL:
+              'https://feedapp2-default-rtdb.asia-southeast1.firebasedatabase.app')
+      .reference();
+  var mapdata;
+  var mapda;
+  late String set_value = 'auto cat feed 10';
+
+
+
+
+
+
+//Method
+
+
+  remeber() {
+    return () async {
+
+      await db
+          .child('/user/run/$loadUsernameData')
+          .once()
+          .then((DataSnapshot snapshot) {
+        mapda = snapshot.value;
+      }).onError((error, stackTrace) => null);
+      print(loadUsernameData);
+      // print(mapda);
+      print('goooooo $mapda');
+    };
+  }
+
+//Explicit
+  publish(
+    String iMsg,
+  ) async {
+    Response response = await http.put(
+      Uri.parse(loadWebAPI.toString()),
+      body: iMsg,
+    );
+    print('Pesponse: ${response.body}');
+  }
 
 Future<NotificationWeekAndTime?> pickSchedule(
   BuildContext context,
 ) async {
-  List<String> weekdays = [
-    'Mon',
-    'Tue',
-    'Wed',
-    'Thu',
-    'Fri',
-    'Sat',
-    'Sun',
-  ];
   TimeOfDay? timeOfDay;
   DateTime now = DateTime.now();
-  int? selectedDay;
+  
 
-  await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            'I want to be reminded every:',
-            textAlign: TextAlign.center,
-          ),
-          content: Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 3,
-            children: [
-              for (int index = 0; index < weekdays.length; index++)
-                ElevatedButton(
-                  onPressed: () {
-                    selectedDay = index + 1;
-                    Navigator.pop(context);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Colors.teal,
-                    ),
-                  ),
-                  child: Text(weekdays[index]),
-                ),
-            ],
-          ),
-        );
-      });
 
-  if (selectedDay != null) {
+  if (null == null) {
     timeOfDay = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(
@@ -69,7 +74,9 @@ Future<NotificationWeekAndTime?> pickSchedule(
           ),
         ),
         builder: (BuildContext context, Widget? child) {
-          return Theme(
+          return 
+          
+          Theme(
             data: ThemeData(
               colorScheme: ColorScheme.light(
                 primary: Colors.teal,
@@ -81,7 +88,8 @@ Future<NotificationWeekAndTime?> pickSchedule(
 
     if (timeOfDay != null) {
       return NotificationWeekAndTime(
-          dayOfTheWeek: selectedDay!, timeOfDay: timeOfDay);
+          timeOfDay: timeOfDay);
+          
     }
   }
   return null;

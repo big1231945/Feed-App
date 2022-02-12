@@ -3,7 +3,9 @@ import 'dart:core';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:feed_app/screens/menu.dart';
+import 'package:feed_app/utility/data_user.dart';
 import 'package:feed_app/utility/notifications.dart';
+import 'package:feed_app/utility/utilities.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,9 +25,12 @@ enum SingingCharacter { A, B, C, D }
 
 class _autoTimeState extends State<autoTime>{
 
+
   @override
   void initState() {
     super.initState();
+    remeber();
+    
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         showDialog(
@@ -100,7 +105,39 @@ class _autoTimeState extends State<autoTime>{
 
 
 
-  
+
+
+
+//Method
+
+
+  remeber() {
+    return widget.storage.readUeserName().then((String value) async {
+      _usernameSeve = value;
+      await db
+          .child('/user/run/$_usernameSeve')
+          .once()
+          .then((DataSnapshot snapshot) {
+        mapda = snapshot.value;
+      }).onError((error, stackTrace) => null);
+      print(_usernameSeve);
+      // print(mapda);
+      print('goooooo $mapda');
+      incrementWebAPI(mapda);
+    });
+  }
+
+//Explicit
+  publish(
+    String iMsg,
+  ) async {
+    Response response = await http.put(
+      Uri.parse(await mapda),
+      body: iMsg,
+    );
+    print('Pesponse: ${response.body}');
+  }
+
 
 //Method
   Future<void> readData() async {
@@ -113,29 +150,9 @@ class _autoTimeState extends State<autoTime>{
     print(mapdata);
   }
 
-  Future<void> remeber() async {
-    return await widget.storage.readUeserName().then((String value) async {
-      _usernameSeve = value;
-      await db
-          .child('/user/run/$_usernameSeve')
-          .once()
-          .then((DataSnapshot snapshot) {
-        mapda = snapshot.value;
-      }).onError((error, stackTrace) => null);
-      print(_usernameSeve);
-      // print(mapda);
-      print('goooooo $mapda');
-    });
-  }
 
 //Explicit
- static  publish(String iMsg ,String mapda) async {
-    Response response = await http.put(
-      Uri.parse(mapda),
-      body: iMsg,
-    );
-    print('Pesponse: ${response.body}');
-  }
+
 
 //  late NETPIE2020 netpie2020;
 
@@ -208,7 +225,6 @@ class _autoTimeState extends State<autoTime>{
   }
 
   
-
   Widget  button5() {
     return RaisedButton(
       color: Colors.cyan,
@@ -218,13 +234,13 @@ class _autoTimeState extends State<autoTime>{
       ),
       
       onPressed: () async {
-        
-         createPlantFoodNotification();
+        //  createPlantFoodNotification();
+        print(loadWebAPI);
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
         // await remeber();
-        // publish(set_value ,mapda);
+        // publish('auto cat feed 10');
         
       },
     );
@@ -276,6 +292,8 @@ class _autoTimeState extends State<autoTime>{
         style: TextStyle(fontSize: 15));
   }
 
+  
+
   late String val10, val20, val30, val40;
   Widget button6() {
     return RaisedButton(
@@ -284,8 +302,15 @@ class _autoTimeState extends State<autoTime>{
         'เลือกเวลา',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
-        _selectTime1();
+      onPressed: ()async {
+        // _selectTime1();
+        NotificationWeekAndTime? pickedSchedule =
+                    await pickSchedule(context);
+
+                if (pickedSchedule != null) {
+                  createWaterReminderNotification(pickedSchedule);
+                  publish('auto cat feed 10');
+                }
       },
     );
   }
@@ -298,7 +323,7 @@ class _autoTimeState extends State<autoTime>{
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () {
-        _selectTime2();
+        // _selectTime2();
       },
     );
   }
