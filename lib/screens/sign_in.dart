@@ -2,15 +2,13 @@
 
 import 'dart:io';
 
-import 'package:feed_app/database/database_helper.dart';
+
 import 'package:feed_app/utility/data_user.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../stroage.dart';
 import 'menu.dart';
 
 class UserNameStorage {
@@ -47,11 +45,6 @@ class UserNameStorage {
   }
 }
 
-  
-
-  
-
-
 class SignIn extends StatefulWidget {
   const SignIn({Key? key, required this.storage}) : super(key: key);
   final UserNameStorage storage;
@@ -66,7 +59,6 @@ class _SignInState extends State<SignIn> {
 
   final userformkey = GlobalKey<FormState>();
   var usernameString, passwordString;
-  final dbhelper = DatabaseHelper.instance;
 
   final DatabaseReference db = FirebaseDatabase(
           databaseURL:
@@ -87,11 +79,14 @@ class _SignInState extends State<SignIn> {
 
     // print('tttttttt   $mapdata');
 
-    if (passwordString == mapdata) {
+    if (passwordString.toString() == mapdata.toString()) {
       // print('bin Gooooooooooooooo');
+      _incrementUsername();
       incrementUsernameData(usernameString);
-      MaterialPageRoute materialPageRoute =
-          MaterialPageRoute(builder: (BuildContext context) => menu(storage: UserNameStorage(),));
+      MaterialPageRoute materialPageRoute = MaterialPageRoute(
+          builder: (BuildContext context) => menu(
+                storage: UserNameStorage(),
+              ));
       Navigator.of(context).push(materialPageRoute);
     }
   }
@@ -116,9 +111,11 @@ class _SignInState extends State<SignIn> {
   }
 
   Widget signInButton() {
-    
     return IconButton(
-      icon: Icon(Icons.login),
+      icon: Icon(
+        Icons.login,
+        color: Colors.green,
+      ),
       onPressed: () {
         // _query();
         // MaterialPageRoute materialPageRoute =
@@ -130,10 +127,6 @@ class _SignInState extends State<SignIn> {
           userformkey.currentState!.save();
           print('user = $usernameString, password= $passwordString');
           readData();
-          _incrementUsername();
-          
-          
-          
 
           // _update();
           // _query();
@@ -210,6 +203,33 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  Widget button4() {
+    return RaisedButton(
+      color: Colors.green,
+      child: Text(
+        'Login',
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      ),
+      onPressed: () {
+        if (userformkey.currentState!.validate()) {
+          userformkey.currentState!.save();
+          print('user = $usernameString, password= $passwordString');
+          readData();
+
+          // _update();
+          // _query();
+        }
+      },
+    );
+  }
+
+  Widget text00() {
+    return Text(
+      "         ",
+      style: TextStyle(height: 3),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -231,23 +251,23 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign In', style: TextStyle(color: Colors.tealAccent)),
-        actions: [signInButton()],
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: <Color>[
-                Colors.cyan,
-                Colors.indigo,
-              ],
+        appBar: AppBar(
+          title: Text('Sign In', style: TextStyle(color: Colors.white)),
+          actions: [signInButton()],
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: <Color>[
+                  Colors.cyan,
+                  Colors.indigo,
+                ],
+              ),
             ),
           ),
+          // backgroundColor: Colors.cyan,
         ),
-        // backgroundColor: Colors.cyan,
-      ),
 //       appBar: GradientAppBar(
 //   title: Text('Flutter Gradient Example'),
 //   gradient: LinearGradient(
@@ -257,18 +277,31 @@ class _SignInState extends State<SignIn> {
 //     ],
 //   ),
 // ),
-      body: Form(
-        key: userformkey,
-        child: ListView(
-          padding: EdgeInsets.all(50.0),
-          children: [
-            showAppLogo(),
-            userNameText(),
-            passwordText(),
-            Text('data $_usernameSeve')
-          ],
-        ),
-      ),
-    );
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[
+                Colors.white,
+                Colors.lightBlue,
+              ],
+            )),
+            child: Form(
+              key: userformkey,
+              child: ListView(
+                padding: EdgeInsets.all(50.0),
+                children: [
+                  showAppLogo(),
+                  userNameText(),
+                  passwordText(),
+                  text00(),
+                  button4()
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }

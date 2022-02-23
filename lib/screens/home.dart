@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:feed_app/screens/sign_in.dart';
-import 'package:feed_app/stroage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 class home extends StatefulWidget {
@@ -16,7 +15,7 @@ class _homeState extends State<home> {
     return Container(
       width: 120.0,
       height: 120.0,
-      child: Image.asset('images/icon.png'),
+      child: Image.asset('images/8124753.png'),
     );
   }
 

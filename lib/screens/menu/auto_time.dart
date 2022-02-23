@@ -1,17 +1,15 @@
-import 'dart:io';
+import 'dart:async';
 import 'dart:core';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:feed_app/screens/menu.dart';
 import 'package:feed_app/utility/data_user.dart';
 import 'package:feed_app/utility/notifications.dart';
+import 'package:feed_app/utility/save_state.dart';
 import 'package:feed_app/utility/utilities.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 import '../sign_in.dart';
 
 class autoTime extends StatefulWidget {
@@ -21,23 +19,123 @@ class autoTime extends StatefulWidget {
   _autoTimeState createState() => _autoTimeState();
 }
 
-enum SingingCharacter { A, B, C, D }
+class _autoTimeState extends State<autoTime> {
+  late Timer _timer;
+  TimeOfDay? timeOfDay;
+  var _selectedValueFeed = ValueFeed.Value10;
+  final _preferencesService = PreferencesSettingsVal();
+  final showTimeSet = ShowTimeSet();
 
-class _autoTimeState extends State<autoTime>{
+  testtime() {
+    print(DateTime.now());
+  }
 
+  TimeOfDay stringToTimeOfDay(String tod) {
+    final format = DateFormat.jm(); //"6:00 AM"
+    return TimeOfDay.fromDateTime(format.parse(tod));
+  }
+
+  runAutoTime1() async {
+    final show = await showTimeSet.getTimeSet();
+    if (DateTime.now().hour == stringToTimeOfDay(show.time1).hour &&
+        DateTime.now().minute == stringToTimeOfDay(show.time1).minute &&
+        DateTime.now().second == 0) {
+          
+          _usernameSeve = await loadUsernameData();
+          await remeber();
+      print('work');
+      publish(await loadValue());
+      
+    }
+    
+  }
+    runAutoTime2() async {
+    final show = await showTimeSet.getTimeSet();
+    if (DateTime.now().hour == stringToTimeOfDay(show.time2).hour &&
+        DateTime.now().minute == stringToTimeOfDay(show.time2).minute &&
+        DateTime.now().second == 0) {
+          _usernameSeve = await loadUsernameData();
+      print('work');
+      publish(await loadValue());
+    }
+    ;
+  }
+    runAutoTime3() async {
+    final show = await showTimeSet.getTimeSet();
+    if (DateTime.now().hour == stringToTimeOfDay(show.time3).hour &&
+        DateTime.now().minute == stringToTimeOfDay(show.time3).minute &&
+        DateTime.now().second == 0) {
+          _usernameSeve = await loadUsernameData();
+      print('work');
+      publish(await loadValue());
+    }
+    ;
+  }
+    runAutoTime4() async {
+    final show = await showTimeSet.getTimeSet();
+    if (DateTime.now().hour == stringToTimeOfDay(show.time4).hour &&
+        DateTime.now().minute == stringToTimeOfDay(show.time4).minute &&
+        DateTime.now().second == 0) {
+          _usernameSeve = await loadUsernameData();
+      print('work');
+      publish(await loadValue());
+    }
+    ;
+  }
+    runAutoTime5() async {
+    final show = await showTimeSet.getTimeSet();
+    if (DateTime.now().hour == stringToTimeOfDay(show.time5).hour &&
+        DateTime.now().minute == stringToTimeOfDay(show.time5).minute &&
+        DateTime.now().second == 0) {
+          _usernameSeve = await loadUsernameData();
+      print('work');
+      publish(await loadValue());
+    }
+    ;
+  }
+
+      
+
+     
 
   @override
   void initState() {
+    // Timer _timer;
+    // DateTime a;
+     // runs every 1 second
+      _timer =
+      Timer.periodic(const Duration(seconds: 1), (timer) {
+        runAutoTime1();
+        runAutoTime2();
+        runAutoTime3();
+        runAutoTime4();
+        runAutoTime5();
+      });
+     
+
+
+
+
+    setState(() {
+      now = DateTime.now();
+      
+    });
+
     super.initState();
-    remeber();
     
+    _populateFields();
+    showTimeState();
+
+    remeber();
+
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: Text('อนุญาตการแจ้งเตือน'),
-            content: Text('ดูเหมือนว่าแอปของคุณยังไม่ได้รับให้มีการแจ้งเตือน โปรดอนุญาตเพื่อเข้าถึงการแจ้งเตือน FeedApp'),
+            content: Text(
+                'ดูเหมือนว่าแอปของคุณยังไม่ได้รับให้มีการแจ้งเตือน โปรดอนุญาตเพื่อเข้าถึงการแจ้งเตือน FeedApp'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -68,20 +166,15 @@ class _autoTimeState extends State<autoTime>{
         );
       }
     });
-
-
-    
   }
 
   @override
   void dispose() {
     AwesomeNotifications().actionSink.close();
     AwesomeNotifications().createdSink.close();
+    _timer.cancel();
     super.dispose();
   }
-  
-  
-
 
   // @override
   // void dispose() {
@@ -90,10 +183,7 @@ class _autoTimeState extends State<autoTime>{
   //   super.dispose();
   // }
 
-  
   var _usernameSeve;
-
-  late String showTime;
 
   final DatabaseReference db = FirebaseDatabase(
           databaseURL:
@@ -103,17 +193,9 @@ class _autoTimeState extends State<autoTime>{
   var mapda;
   late String set_value = 'auto cat feed 10';
 
-
-
-
-
-
 //Method
 
-
-  remeber() {
-    return widget.storage.readUeserName().then((String value) async {
-      _usernameSeve = value;
+  remeber() async{
       await db
           .child('/user/run/$_usernameSeve')
           .once()
@@ -124,7 +206,7 @@ class _autoTimeState extends State<autoTime>{
       // print(mapda);
       print('goooooo $mapda');
       incrementWebAPI(mapda);
-    });
+    
   }
 
 //Explicit
@@ -138,7 +220,6 @@ class _autoTimeState extends State<autoTime>{
     print('Pesponse: ${response.body}');
   }
 
-
 //Method
   Future<void> readData() async {
     print('Work!!!');
@@ -150,106 +231,36 @@ class _autoTimeState extends State<autoTime>{
     print(mapdata);
   }
 
-
 //Explicit
-
 
 //  late NETPIE2020 netpie2020;
 
-  TimeOfDay _time1 = TimeOfDay(hour: 0, minute: 00);
-  TimeOfDay _time2 = TimeOfDay(hour: 0, minute: 00);
-  TimeOfDay _time3 = TimeOfDay(hour: 0, minute: 00);
-  TimeOfDay _time4 = TimeOfDay(hour: 0, minute: 00);
-  TimeOfDay _time5 = TimeOfDay(hour: 0, minute: 00);
 
-
-
-  void _selectTime1() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time1,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time1 = newTime;
-      });
-    }
-  }
-
-  void _selectTime2() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time2,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time2 = newTime;
-      });
-    }
-  }
-
-  void _selectTime3() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time3,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time3 = newTime;
-      });
-    }
-  }
-
-  void _selectTime4() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time4,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time4 = newTime;
-      });
-    }
-  }
-
-  void _selectTime5() async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: _time5,
-    );
-    if (newTime != null) {
-      setState(() {
-        _time5 = newTime;
-      });
-    }
-  }
-
-  
-  Widget  button5() {
+  Widget button55() {
     return RaisedButton(
       color: Colors.cyan,
       child: Text(
         'ให้อาหาร 50 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      
       onPressed: () async {
-        //  createPlantFoodNotification();
-        print(loadWebAPI);
+        // print(DateFormat('HH:mm:ss').format());
+        // createPlantFoodNotification();
+        // print(loadWebAPI);
+        // await AndroidAlarmManager.oneShot(const Duration(seconds: 5), 1, publish('auto cat feed 10'));
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
         // await remeber();
         // publish('auto cat feed 10');
-        
+        publish(await loadValue());
       },
     );
   }
 
   static void printHello() {
-  
-  print("${DateTime.now()} Hello, world! ");
-}
+    print("${DateTime.now()} Hello, world! ");
+  }
 
   Widget text0() {
     return Text("         ");
@@ -264,190 +275,278 @@ class _autoTimeState extends State<autoTime>{
   }
 
   Widget text3() {
-    return Text("ควบคุมเอง", style: TextStyle(fontSize: 30));
+    return Text('', style: TextStyle(fontSize: 30));
   }
 
   Widget text4() {
-    return Text('Selected time: ${_time1.format(context)}',
-        style: TextStyle(fontSize: 15));
+    return Text('เวลาที่เลือก: ${Time1}', style: TextStyle(fontSize: 15));
   }
 
   Widget text5() {
-    return Text('Selected time: ${_time2.format(context)}',
-        style: TextStyle(fontSize: 15));
+    return Text('เวลาที่เลือก: ${Time2}', style: TextStyle(fontSize: 15));
   }
 
   Widget text6() {
-    return Text('Selected time: ${_time3.format(context)}',
-        style: TextStyle(fontSize: 15));
+    return Text('เวลาที่เลือก: ${Time3}', style: TextStyle(fontSize: 15));
   }
 
   Widget text7() {
-    return Text('Selected time: ${_time4.format(context)}',
-        style: TextStyle(fontSize: 15));
+    return Text('เวลาที่เลือก: ${Time4}', style: TextStyle(fontSize: 15));
   }
 
   Widget text8() {
-    return Text('Selected time: ${_time5.format(context)}',
-        style: TextStyle(fontSize: 15));
+    return Text('เวลาที่เลือก: ${Time5}', style: TextStyle(fontSize: 15));
   }
-
-  
 
   late String val10, val20, val30, val40;
+  String Time1 = 'HH:MM',
+      Time2 = 'HH:MM',
+      Time3 = 'HH:MM',
+      Time4 = 'HH:MM',
+      Time5 = 'HH:MM';
+  void showTime() {
+    final newSeveTimeSet = SaveTimeSet(
+        time1: Time1, time2: Time2, time3: Time3, time4: Time4, time5: Time5);
+    print(newSeveTimeSet);
+    showTimeSet.saveTimeSet(newSeveTimeSet);
+  }
+
+  var showTimeSaveState = TextEditingController();
+  void showTimeState() async {
+    final show = await showTimeSet.getTimeSet();
+    setState(() {
+      Time1 = show.time1;
+      Time2 = show.time2;
+      Time3 = show.time3;
+      Time4 = show.time4;
+      Time5 = show.time5;
+    });
+  }
+
+  Widget button1() {
+    return RaisedButton(
+      color: Colors.green[400],
+      child: Text(
+        'เลือกเวลา',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // _selectTime1();
+        NotificationWeekAndTime? pickedSchedule = await pickSchedule(context);
+
+        if (pickedSchedule != null) {
+          createWaterReminderNotification1(pickedSchedule);
+          // publish('auto cat feed 10');
+          setState(() {
+            Time1 = pickedSchedule.timeOfDay.format(context);
+            showTime();
+          });
+        }
+      },
+    );
+  }
+
+  Widget button2() {
+    return RaisedButton(
+      color: Colors.green[400],
+      child: Text(
+        'เลือกเวลา',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // _selectTime2();
+        NotificationWeekAndTime? pickedSchedule = await pickSchedule(context);
+
+        if (pickedSchedule != null) {
+          createWaterReminderNotification2(pickedSchedule);
+          // publish('auto cat feed 10');
+          setState(() {
+            Time2 = pickedSchedule.timeOfDay.format(context);
+            showTime();
+          });
+        }
+      },
+    );
+  }
+
+  Widget button3() {
+    return RaisedButton(
+      color: Colors.green[400],
+      child: Text(
+        'เลือกเวลา',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // _selectTime3();
+        NotificationWeekAndTime? pickedSchedule = await pickSchedule(context);
+
+        if (pickedSchedule != null) {
+          createWaterReminderNotification3(pickedSchedule);
+          // publish('auto cat feed 10');
+          setState(() {
+            Time3 = pickedSchedule.timeOfDay.format(context);
+            showTime();
+          });
+        }
+      },
+    );
+  }
+
+  Widget button4() {
+    return RaisedButton(
+      color: Colors.green[400],
+      child: Text(
+        'เลือกเวลา',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // _selectTime4();
+        NotificationWeekAndTime? pickedSchedule = await pickSchedule(context);
+
+        if (pickedSchedule != null) {
+          createWaterReminderNotification4(pickedSchedule);
+          // publish('auto cat feed 10');
+          setState(() {
+            Time4 = pickedSchedule.timeOfDay.format(context);
+            showTime();
+          });
+        }
+      },
+    );
+  }
+
+  Widget button5() {
+    return RaisedButton(
+      color: Colors.green[400],
+      child: Text(
+        'เลือกเวลา',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // _selectTime5();
+        NotificationWeekAndTime? pickedSchedule = await pickSchedule(context);
+
+        if (pickedSchedule != null) {
+          createWaterReminderNotification5(pickedSchedule);
+          // publish('auto cat feed 10');
+          setState(() {
+            Time5 = pickedSchedule.timeOfDay.format(context);
+            showTime();
+          });
+        }
+      },
+    );
+  }
+
   Widget button6() {
     return RaisedButton(
-      color: Colors.cyan,
+      color: Colors.deepOrange[800],
       child: Text(
-        'เลือกเวลา',
+        'ล้างข้อมูลการเลือกเวลา',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: ()async {
-        // _selectTime1();
-        NotificationWeekAndTime? pickedSchedule =
-                    await pickSchedule(context);
-
-                if (pickedSchedule != null) {
-                  createWaterReminderNotification(pickedSchedule);
-                  publish('auto cat feed 10');
-                }
+      onPressed: () async {
+        final show = await showTimeSet.DeleteTimeSet();
+        cancelScheduledNotifications();
+        setState(() {
+          show;
+          showTimeState();
+        });
       },
     );
   }
 
-  Widget button7() {
-    return RaisedButton(
-      color: Colors.cyan,
-      child: Text(
-        'เลือกเวลา',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {
-        // _selectTime2();
-      },
-    );
+  void _populateFields() async {
+    final settings = await _preferencesService.getSettingsVal();
+    setState(() {
+      _selectedValueFeed = settings.valueFeed;
+    });
   }
 
-  Widget button8() {
-    return RaisedButton(
-      color: Colors.cyan,
-      child: Text(
-        'เลือกเวลา',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {
-        _selectTime3();
-      },
-    );
+  void _saveSettings() {
+    final newSettings = SettingsValFeed(valueFeed: _selectedValueFeed);
+    print(newSettings);
+    _preferencesService.saveSettingsVal(newSettings);
   }
 
-  Widget button9() {
-    return RaisedButton(
-      color: Colors.cyan,
-      child: Text(
-        'เลือกเวลา',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {
-        _selectTime4();
-      },
-    );
-  }
-
-  Widget button10() {
-    return RaisedButton(
-      color: Colors.cyan,
-      child: Text(
-        'เลือกเวลา',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () {
-        _selectTime5();
-      },
-    );
-  }
-
-  SingingCharacter? _character = SingingCharacter.A;
-
-  Widget raio1() {
-    return ListTile(
-      title: const Text('10 กรัม'),
-      leading: Radio<SingingCharacter>(
-        value: SingingCharacter.A,
-        groupValue: _character,
-        onChanged: (SingingCharacter? value) {
+  Widget raioVal() {
+    return RadioListTile(
+        title: Text('10 กรัม'),
+        value: ValueFeed.Value10,
+        groupValue: _selectedValueFeed,
+        onChanged: (ValueFeed? newValue) {
+          incrementValue('auto cat feed 10');
           setState(() {
-            _character = value;
-            set_value = 'auto cat feed 10';
+            _selectedValueFeed = newValue!;
+            _saveSettings();
           });
-          print(set_value);
-        },
-      ),
+        });
+  }
+
+  Widget raioVal2() {
+    return RadioListTile(
+        title: Text('20 กรัม'),
+        value: ValueFeed.Value20,
+        groupValue: _selectedValueFeed,
+        onChanged: (ValueFeed? newValue) {
+          incrementValue('auto cat feed 20');
+          setState(() {
+            _selectedValueFeed = newValue!;
+            _saveSettings();
+          });
+        });
+  }
+
+  Widget raioVal3() {
+    return RadioListTile(
+        title: Text('30 กรัม'),
+        value: ValueFeed.Value30,
+        groupValue: _selectedValueFeed,
+        onChanged: (ValueFeed? newValue) {
+          incrementValue('auto cat feed 30');
+          setState(() {
+            _selectedValueFeed = newValue!;
+            _saveSettings();
+          });
+        });
+  }
+
+  Widget raioVal4() {
+    return RadioListTile(
+        title: Text('40 กรัม'),
+        value: ValueFeed.Value40,
+        groupValue: _selectedValueFeed,
+        onChanged: (ValueFeed? newValue) {
+          incrementValue('auto cat feed 40');
+          setState(() {
+            _selectedValueFeed = newValue!;
+            _saveSettings();
+          });
+        });
+  }
+
+  Widget showAppLogo() {
+    return Container(
+      width: 120.0,
+      height: 120.0,
+      child: Image.asset('images/8124753.png'),
     );
   }
 
-  Widget raio2() {
-    return ListTile(
-      title: const Text('20 กรัม'),
-      leading: Radio<SingingCharacter>(
-        value: SingingCharacter.B,
-        groupValue: _character,
-        onChanged: (SingingCharacter? value) {
-          setState(() {
-            _character = value;
-            set_value = 'auto cat feed 20';
-          });
-          print(set_value);
-
-        },
-      ),
-    );
-  }
-
-  Widget raio3() {
-    return ListTile(
-      title: const Text('30 กรัม'),
-      leading: Radio<SingingCharacter>(
-        value: SingingCharacter.C,
-        groupValue: _character,
-        onChanged: (SingingCharacter? value) {
-          setState(() {
-            _character = value;
-            set_value = 'auto cat feed 30';
-          });
-          print(set_value);
-        },
-      ),
-    );
-  }
-
-  Widget raio4() {
-    return ListTile(
-      title: const Text('40 กรัม'),
-      leading: Radio<SingingCharacter>(
-        value: SingingCharacter.D,
-        groupValue: _character,
-        onChanged: (SingingCharacter? value) {
-          setState(() {
-            _character = value;
-            set_value = 'auto cat feed 40';
-          });
-          print(set_value);
-        },
-      ),
+  Widget text00() {
+    return Text(
+      "         ",
+      style: TextStyle(height: 3),
     );
   }
 //Explicit
 
-
+  var now = DateTime.now();
 
   @override
-  
-  
   Widget build(BuildContext context) {
+    var formattedTime = DateFormat('HH:mm:ss').format(now);
 
-
-    
     return Scaffold(
       appBar: AppBar(
         title: Text('อัตโนมัติ'),
@@ -475,29 +574,27 @@ class _autoTimeState extends State<autoTime>{
 //   ),
 // ),
 
-
-
       body: SafeArea(
           child: Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: <Color>[
+                  Colors.white,
                   Colors.cyan,
-                  Colors.indigo,
                 ],
               )),
-              child: Center(
-                child: ListView(
+              child: IndexedStack(children: [
+                ListView(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [text3()],
+                      children: [text00()],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [button5()],
+                      children: [showAppLogo()],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -505,7 +602,7 @@ class _autoTimeState extends State<autoTime>{
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [raio1(), raio2(), raio3(), raio4()],
+                      children: [raioVal(), raioVal2(), raioVal3(), raioVal4()],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -519,7 +616,7 @@ class _autoTimeState extends State<autoTime>{
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [button6(), text0(), button7()],
+                      children: [button1(), text0(), button2()],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -527,7 +624,7 @@ class _autoTimeState extends State<autoTime>{
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [button8(), text0(), button9()],
+                      children: [button3(), text0(), button4()],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -536,12 +633,18 @@ class _autoTimeState extends State<autoTime>{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        button10(),
+                        button5(),
                       ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // button55(),
+                       button6()],
                     ),
                   ],
                 ),
-              ))),
+              ]))),
     );
   }
 }

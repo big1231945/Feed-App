@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:feed_app/utility/data_user.dart';
-import 'package:feed_app/utility/device.dart';
-import 'package:feed_app/utility/netpie.dart';
+import 'package:feed_app/utility/utilities.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -25,101 +24,67 @@ class _StartState extends State<Start> {
   @override
   void initState() {
     super.initState();
-    remeber();
-    
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('อนุญาตการแจ้งเตือน'),
-            content: Text(
-                'ดูเหมือนว่าแอปของคุณยังไม่ได้รับให้มีการแจ้งเตือน โปรดอนุญาตเพื่อเข้าถึงการแจ้งเตือน FeedApp'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'Don\'t Allow',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              TextButton(
-                  onPressed: () => AwesomeNotifications()
-                      .requestPermissionToSendNotifications()
-                      .then((_) => Navigator.pop(context)),
-                  child: Text(
-                    'Allow',
-                    style: TextStyle(
-                      color: Colors.teal,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ))
-            ],
-          ),
-        );
-      }
-    });
-//      AwesomeNotifications().createdStream.listen((notification) {
-//       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-//         content: Text(
-//           'Notification Created on ${notification.channelKey}',
-//         ),
-//       ));
-//     });
-//  AwesomeNotifications().actionStream.listen((notification) {
-//       if (notification.channelKey == 'basic_channel') {
-//         AwesomeNotifications().getGlobalBadgeCounter().then(
-//               (value) =>
-//                   AwesomeNotifications().setGlobalBadgeCounter(value - 1),
-//             );
-//       }
 
-//       Navigator.pushAndRemoveUntil(
-//         context,
-//         MaterialPageRoute(
-//           builder: (_) => menu(storage: UserNameStorage()),
-//         ),
-//         (route) => route.isFirst,
-//       );
-//     });
+    // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    //   if (!isAllowed) {
+    //     showDialog(
+    //       context: context,
+    //       builder: (context) => AlertDialog(
+    //         title: Text('อนุญาตการแจ้งเตือน'),
+    //         content: Text(
+    //             'ดูเหมือนว่าแอปของคุณยังไม่ได้รับให้มีการแจ้งเตือน โปรดอนุญาตเพื่อเข้าถึงการแจ้งเตือน FeedApp'),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.pop(context);
+    //             },
+    //             child: Text(
+    //               'Don\'t Allow',
+    //               style: TextStyle(
+    //                 color: Colors.grey,
+    //                 fontSize: 18,
+    //               ),
+    //             ),
+    //           ),
+    //           TextButton(
+    //               onPressed: () => AwesomeNotifications()
+    //                   .requestPermissionToSendNotifications()
+    //                   .then((_) => Navigator.pop(context)),
+    //               child: Text(
+    //                 'Allow',
+    //                 style: TextStyle(
+    //                   color: Colors.teal,
+    //                   fontSize: 18,
+    //                   fontWeight: FontWeight.bold,
+    //                 ),
+    //               ))
+    //         ],
+    //       ),
+    //     );
+    //   }
+    // });
   }
 
   var _usernameSeve;
 
   late String showTime;
 
-  final DatabaseReference db = FirebaseDatabase(
-          databaseURL:
-              'https://feedapp2-default-rtdb.asia-southeast1.firebasedatabase.app')
-      .reference();
   var mapdata;
   var mapda;
 
 //Method
 
-
-  remeber() {
-    return widget.storage.readUeserName().then((String value) async {
-      _usernameSeve = value;
-      await db
-          .child('/user/run/$_usernameSeve')
-          .once()
-          .then((DataSnapshot snapshot) {
-        mapda = snapshot.value;
-      }).onError((error, stackTrace) => null);
-      print(_usernameSeve);
-      // print(mapda);
-      print('goooooo $mapda');
-      incrementWebAPI(mapda);
-    }
-    
-    );
+  remeber() async {
+    await db
+        .child('/user/run/$_usernameSeve')
+        .once()
+        .then((DataSnapshot snapshot) {
+      mapda = snapshot.value;
+    }).onError((error, stackTrace) => null);
+    print(_usernameSeve);
+    // print(mapda);
+    print('goooooo $mapda');
+    incrementWebAPI(mapda);
   }
 
 //Explicit
@@ -133,6 +98,14 @@ class _StartState extends State<Start> {
     print('Pesponse: ${response.body}');
   }
 
+  Widget showAppLogo() {
+    return Container(
+      width: 120.0,
+      height: 120.0,
+      child: Image.asset('images/cat-food-hearts-icon.png'),
+    );
+  }
+
   Widget button1() {
     return RaisedButton(
       color: Colors.cyan,
@@ -140,13 +113,13 @@ class _StartState extends State<Start> {
         'ให้อาหาร 10 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
+      onPressed: () async {
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
-        remeber();
+        _usernameSeve = await loadUsernameData();
+        await remeber();
         publish('auto cat feed 10');
-        
       },
     );
   }
@@ -158,12 +131,13 @@ class _StartState extends State<Start> {
         'ให้อาหาร 20 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () async{
+      onPressed: () async {
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
+        _usernameSeve = await loadUsernameData();
+        await remeber();
         publish('auto cat feed 20');
-        remeber();
       },
     );
   }
@@ -175,11 +149,12 @@ class _StartState extends State<Start> {
         'ให้อาหาร 30 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
+      onPressed: () async {
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
-
+        _usernameSeve = await loadUsernameData();
+        await remeber();
         publish('auto cat feed 30');
       },
     );
@@ -192,11 +167,12 @@ class _StartState extends State<Start> {
         'ให้อาหาร 40 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
+      onPressed: () async {
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
-
+        _usernameSeve = await loadUsernameData();
+        await remeber();
         publish('auto cat feed 40');
       },
     );
@@ -209,61 +185,97 @@ class _StartState extends State<Start> {
         'ให้อาหาร 50 กรัม',
         style: TextStyle(color: Colors.white),
       ),
-      onPressed: () {
+      onPressed: () async {
         // netpie2020
         //   .publish('servo0',_rESTAPIauth).then((res) {
         //   });
-
+        _usernameSeve = await loadUsernameData();
+        await remeber();
         publish('auto cat feed 50');
       },
     );
   }
 
   Widget text0() {
-    return Text("         ");
+    return Text(
+      "         ",
+      style: TextStyle(height: 3),
+    );
+  }
+
+  Widget text00() {
+    return Text(
+      "         ",
+      style: TextStyle(height: 10),
+    );
+  }
+
+  Widget text000() {
+    return Text(
+      "         ",
+      style: TextStyle(height: 2),
+    );
   }
 
   Widget text3() {
-    return Text("ควบคุมเอง", style: TextStyle(fontSize: 30));
+    return Text("สั่งงาน Feed Cat",
+        style: TextStyle(
+          fontSize: 30,
+        ));
   }
 
   @override
-  
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('การใช้งาน'),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: <Color>[
-                Colors.cyan,
-                Colors.indigo,
-              ],
+            // decoration: BoxDecoration(
+            //   gradient:
+            //   LinearGradient(
+            //     begin: Alignment.centerLeft,
+            //     end: Alignment.centerRight,
+            //     colors: <Color>[
+            //       Colors.cyan,
+            //       Colors.indigo,
+            //     ],
+            //   ),
+            // ),
             ),
-          ),
-        ),
       ),
       body: SafeArea(
           child: Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: <Color>[
-                  Colors.cyan,
-                  Colors.indigo,
+                  Colors.white,
+                  Colors.lightBlueAccent,
                 ],
               )),
               child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                child: ListView(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      children: [text00()],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [showAppLogo()],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [text000()],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [text3()],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [text0()],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -277,7 +289,6 @@ class _StartState extends State<Start> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [button5()],
                     ),
-                    
                   ],
                 ),
               ))),
@@ -306,7 +317,5 @@ class Test2 {
 //     });
 //   }
 // }
-
-
 
 // method time

@@ -1,4 +1,4 @@
-
+import 'package:feed_app/screens/menu/auto_time.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart';
@@ -17,6 +17,7 @@ Future<String> loadUrlNetpie() async {
   urlNetpie = (prefs.getString('UrlNetpie'))!;
   return urlNetpie;
 }
+
 Future<String> loadWebAPI() async {
   final prefs = await SharedPreferences.getInstance();
   String webAPI;
@@ -35,10 +36,23 @@ void incrementUrlNetpie(String urlNetpie) async {
 
   prefs.setString('UrlNetpie', urlNetpie);
 }
+
 void incrementWebAPI(String webAPI) async {
   final prefs = await SharedPreferences.getInstance();
 
   prefs.setString('WebAPI', webAPI);
+}
+
+void incrementValue(String value) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  prefs.setString('ValueFeed', value);
+}
+Future<String> loadValue() async {
+  final prefs = await SharedPreferences.getInstance();
+  String value;
+  value = (prefs.getString('ValueFeed'))!;
+  return value;
 }
 
 void deleteUsernameData() async {
@@ -47,16 +61,50 @@ void deleteUsernameData() async {
 
   prefs.setString('username', _username);
 }
+
 void deleteWebAPI() async {
   final prefs = await SharedPreferences.getInstance();
   String webAPI = '';
 
   prefs.setString('WebAPI', webAPI);
 }
+void deleteUrlNetpie() async {
+  final prefs = await SharedPreferences.getInstance();
+  String webAPI = '';
+
+  prefs.setString('UrlNetpie', webAPI);
+}
+void deleteCam() async {
+  final prefs = await SharedPreferences.getInstance();
+  String cam = '';
+
+  prefs.setString('Cam', cam);
+}
+
+void deleteValue() async {
+  final prefs = await SharedPreferences.getInstance();
+  String value = '';
+
+  prefs.setString('ValueFeed', value);
+}
+
+void incrementCam(String cam) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  prefs.setString('Cam', cam);
+}
+Future<String> loadCam() async {
+  final prefs = await SharedPreferences.getInstance();
+  String cam;
+  cam = (prefs.getString('Cam'))!;
+  return cam;
+}
+
+void fireAlarm() {
+  print('Alarm Fired at ${DateTime.now()}');
+}
 
 
-
-  
 class RunBackgorude {
   final DatabaseReference db = FirebaseDatabase(
           databaseURL:
@@ -66,7 +114,6 @@ class RunBackgorude {
   var mapda;
 
 //Method
-
 
   remeber() {
     return () async {
@@ -78,7 +125,6 @@ class RunBackgorude {
       }).onError((error, stackTrace) => null);
       // print(mapda);
       print('goooooo $mapda');
-
     };
   }
 
@@ -93,9 +139,3 @@ class RunBackgorude {
     print('Pesponse: ${response.body}');
   }
 }
- 
-
-
-
-
- 

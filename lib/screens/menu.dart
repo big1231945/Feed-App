@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -10,6 +11,7 @@ import 'package:feed_app/screens/menu/auto_time.dart';
 import 'package:feed_app/screens/menu/start.dart';
 import 'package:feed_app/screens/sign_in.dart';
 import 'package:feed_app/utility/data_user.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:feed_app/utility/constants.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,7 +25,10 @@ class menu extends StatefulWidget {
 }
 
 class RecomendPlantCard extends StatelessWidget {
-  const RecomendPlantCard({
+
+
+
+  RecomendPlantCard({
     required this.image,
     required this.title,
     required this.country,
@@ -34,13 +39,10 @@ class RecomendPlantCard extends StatelessWidget {
 
   final VoidCallback press;
 
-  
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      
       margin: EdgeInsets.only(
         left: kDefaultPadding,
         top: kDefaultPadding / 3,
@@ -48,14 +50,11 @@ class RecomendPlantCard extends StatelessWidget {
       ),
       width: size.width * 0.33,
       child: Column(
-      
         children: [
           InkWell(
             onTap: press,
             child: Image.asset(image),
-
           ),
-          
           GestureDetector(
             onTap: press,
             child: Container(
@@ -105,8 +104,34 @@ class RecomendPlantCard extends StatelessWidget {
 class _menuState extends State<menu> {
   var _usernameSeve;
   var nameTag;
+  var mapda;
 
-    @override
+final DatabaseReference dba = FirebaseDatabase(
+          databaseURL:
+              'https://feedapp2-default-rtdb.asia-southeast1.firebasedatabase.app')
+      .reference();
+  var cam ;
+   remeber66() async{
+      await dba
+          .child('/user/cam/$_usernameSeve')
+          .once()
+          .then((DataSnapshot snapshot) {
+            print('aaaaaaaaaaaaaa    ${snapshot.value}');
+        incrementCam(snapshot.value);
+      }).onError((error, stackTrace) => null);
+      print(loadCam());
+      // print(mapda);
+      cam = await loadCam();
+      print(cam);
+      
+  }
+
+  camwww()async{
+await remeber66();
+  }
+
+
+  @override
   void dispose() {
     AwesomeNotifications().actionSink.close();
     AwesomeNotifications().createdSink.close();
@@ -119,9 +144,24 @@ class _menuState extends State<menu> {
     });
   }
 
+  Widget text0() {
+    return Text(
+      "         ",
+      style: TextStyle(height: 3),
+    );
+  }
+
   // Method
   Widget text1() {
-    return Text("สวัสดี $_usernameSeve", style: TextStyle(fontSize: 30));
+    return Text("Feed App",
+        style: TextStyle(
+            fontSize: 30, color: Colors.indigo, fontWeight: FontWeight.w700));
+  }
+
+  Widget text11() {
+    return Text("สวัสดีคุณ $_usernameSeve",
+        style: TextStyle(
+            fontSize: 30, color: Colors.indigo, fontWeight: FontWeight.w700));
   }
 
   Widget text2() {
@@ -173,12 +213,13 @@ class _menuState extends State<menu> {
     return RecomendPlantCard(
       image: "images/camera-icon-clipart-transparent.png",
       title: "กล้อง",
-      country: "สักเกตุการ",
-      press: () {
-        MaterialPageRoute materialPageRoute = MaterialPageRoute(
+      country: "สังเกตุการ",
+      press: () async{
+        await camwww();
+       MaterialPageRoute materialPageRoute = await MaterialPageRoute(
             builder: (BuildContext context) => Carmera(
                   channel:
-                      IOWebSocketChannel.connect('ws://35.240.249.224:65080'),
+                       IOWebSocketChannel.connect(cam),
                 ));
         Navigator.of(context).push(materialPageRoute);
       },
@@ -191,10 +232,10 @@ class _menuState extends State<menu> {
       title: "อัตโนมัติ",
       country: "ตั้งเวลาในการให้",
       press: () {
-        MaterialPageRoute materialPageRoute =
-            MaterialPageRoute(builder: (BuildContext context) => autoTime(
-              storage: UserNameStorage(),
-            ));
+        MaterialPageRoute materialPageRoute = MaterialPageRoute(
+            builder: (BuildContext context) => autoTime(
+                  storage: UserNameStorage(),
+                ));
         Navigator.of(context).push(materialPageRoute);
       },
     );
@@ -208,13 +249,15 @@ class _menuState extends State<menu> {
       press: () {},
     );
   }
-
   @override
   void initState() {
+    // camwww();
     super.initState();
+    
     widget.storage.readUeserName().then((value) {
       setState(() {
         _usernameSeve = value;
+        
       });
     });
   }
@@ -225,7 +268,7 @@ class _menuState extends State<menu> {
         appBar: AppBar(
           title: Text(
             'Menu FeedApp',
-            style: TextStyle(color: Colors.tealAccent),
+            // style: TextStyle(color: Colors.tealAccent),
           ),
           flexibleSpace: Container(
             decoration: BoxDecoration(
@@ -251,27 +294,40 @@ class _menuState extends State<menu> {
 //   ),
 // ),
         body: SafeArea(
-            child: 
-            Container(
+            child: Container(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: const <Color>[
-                    Colors.cyan,
-                    Colors.indigo,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.white,
+                    Colors.lightBlueAccent,
                   ],
                 )),
                 child: Center(
-                  child: 
-                  ListView(
-                    
+                  child: ListView(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          text0(),
+                          // manu2()
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           text1(),
+                          // manu2()
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          text11(),
                           // manu2()
                         ],
                       ),

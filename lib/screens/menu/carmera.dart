@@ -1,62 +1,5 @@
-// // import 'package:flutter/material.dart';
-// // import 'package:web_socket_channel/io.dart';
-// // import 'package:web_socket_channel/web_socket_channel.dart';
-// // class Carmera extends StatefulWidget {
-// //   @override
-// //   _CarmeraState createState() => _CarmeraState();
-// // }
-
-// // class _CarmeraState extends State<Carmera> {
-// // //Explicit
-
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       appBar: AppBar(
-// //         title: Text('กล้อง'),
-// //         flexibleSpace: Container(
-// //           decoration: BoxDecoration(
-// //             gradient: LinearGradient(
-// //               begin: Alignment.centerLeft,
-// //               end: Alignment.centerRight,
-// //               colors: <Color>[
-// //                 Colors.cyan,
-// //                 Colors.indigo,
-// //               ],
-// //             ),
-// //           ),
-// //         ),
-// //         // backgroundColor: Colors.cyan,
-// //       ),
-// // //       appBar: GradientAppBar(
-// // //   title: Text('Flutter Gradient Example'),
-// // //   gradient: LinearGradient(
-// // //     colors: [
-// // //       Colors.cyan,
-// // //       Colors.indigo,
-// // //     ],
-// // //   ),
-// // // ),
-// //       body: Form(
-// //         child: ListView(
-// //           padding: EdgeInsets.all(50.0),
-// //           children: [],
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
-
-
-
-
-
-
-
-// ignore_for_file: import_of_legacy_library_into_null_safe, prefer_const_constructors_in_immutables, prefer_const_constructors, unused_local_variable
-
 import 'dart:async';
-import 'dart:convert';
+
 import 'dart:ui';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -70,11 +13,12 @@ import 'package:intl/intl.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-
+import '../menu.dart';
+import '../sign_in.dart';
 
 class Carmera extends StatefulWidget {
   final WebSocketChannel channel;
-  
+
   Carmera({required this.channel});
 
   @override
@@ -92,7 +36,6 @@ class _CarmeraState extends State<Carmera> {
   late String _timeString;
 
   var _globalKey = new GlobalKey();
-  
 
   @override
   void initState() {
@@ -130,8 +73,7 @@ class _CarmeraState extends State<Carmera> {
           newVideoSizeWidth = videoWidth * newVideoSizeHeight / videoHeight;
         }
 
-        return 
-        Container(
+        return Container(
           color: Colors.black,
           child: StreamBuilder(
             stream: widget.channel.stream,
@@ -159,8 +101,7 @@ class _CarmeraState extends State<Carmera> {
                                 maxScale: 5.0,
                                 doubleTapScale: 2.0,
                                 duration: Duration(milliseconds: 200),
-                                child: 
-                                Image.memory(
+                                child: Image.memory(
                                   snapshot.data,
                                   gaplessPlayback: true,
                                   width: newVideoSizeWidth,
@@ -176,10 +117,12 @@ class _CarmeraState extends State<Carmera> {
                                     height: 16,
                                   ),
                                   Text(
-                                    'กล้องดูแมว',
+                                    'FeedApp Carmera',
                                     style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w300),
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.blueGrey
+                                        ),
                                   ),
                                   SizedBox(
                                     height: 4,
@@ -187,8 +130,10 @@ class _CarmeraState extends State<Carmera> {
                                   Text(
                                     'Live | $_timeString',
                                     style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300),
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w300,
+                                        color: Colors.blueGrey
+                                        ),
                                   ),
                                 ],
                               ),
@@ -199,7 +144,16 @@ class _CarmeraState extends State<Carmera> {
                         Expanded(
                           flex: 1,
                           child: Container(
-                            color: Colors.cyan[200],
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: <Color>[
+                                Colors.white,
+                                Colors.yellow.shade200,
+                              ],
+                            )),
+                            // color: Colors.cyan[200],
                             width: MediaQuery.of(context).size.width,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -263,20 +217,19 @@ class _CarmeraState extends State<Carmera> {
     var image = await boundary?.toImage();
     var byteData = await image?.toByteData(format: ImageByteFormat.png);
     var pngBytes = byteData!.buffer.asUint8List();
-    
 
     Fluttertoast.showToast(
-       
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        fontSize: 16.0, msg: '');
+        fontSize: 16.0,
+        msg: '');
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return DateFormat('MM/dd hh:mm:ss aaa').format(dateTime);
+    return DateFormat('MM/dd hh:mm:ss aaa',).format(dateTime);
   }
 
   void _getTime() {
@@ -293,11 +246,19 @@ class _CarmeraState extends State<Carmera> {
       visible: isLandscape,
       curve: Curves.bounceIn,
       children: [
+        // SpeedDialChild(
+        //   child: Icon(Icons.photo_camera),
+        //   onTap: takeScreenShot,
+        // ),
         SpeedDialChild(
-          child: Icon(Icons.photo_camera),
-          onTap: takeScreenShot,
-        ),
-        SpeedDialChild(child: Icon(Icons.videocam), onTap: () {})
+            child: Icon(Icons.backspace,color: Colors.red,),
+            onTap: () {
+              MaterialPageRoute materialPageRoute = MaterialPageRoute(
+                  builder: (BuildContext context) => menu(
+                        storage: UserNameStorage(),
+                      ));
+              Navigator.of(context).push(materialPageRoute);
+            })
       ],
     );
   }

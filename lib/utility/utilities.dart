@@ -22,12 +22,6 @@ final DatabaseReference db = FirebaseDatabase(
   var mapdata;
   var mapda;
   late String set_value = 'auto cat feed 10';
-
-
-
-
-
-
 //Method
 
 
@@ -73,6 +67,7 @@ Future<NotificationWeekAndTime?> pickSchedule(
             Duration(minutes: 1),
           ),
         ),
+        
         builder: (BuildContext context, Widget? child) {
           return 
           
@@ -84,7 +79,8 @@ Future<NotificationWeekAndTime?> pickSchedule(
             ),
             child: child!,
           );
-        });
+        }
+        );
 
     if (timeOfDay != null) {
       return NotificationWeekAndTime(

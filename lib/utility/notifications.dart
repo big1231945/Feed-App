@@ -16,23 +16,139 @@ Future<void> createPlantFoodNotification() async {
   );
 }
 
-Future<void> createWaterReminderNotification(
+Future<void> createWaterReminderNotification1(
     NotificationWeekAndTime notificationSchedule) async {
       // RunBackgorude instance01 = RunBackgorude();
   await AwesomeNotifications().createNotification(
     content: NotificationContent(
-      id: createUniqueId(),
+      id: 1,
       channelKey: 'scheduled_channel',
-      title: '${Emojis.wheater_droplet} Add some water to your plant!',
-      body: 'Water your plant regularly to keep it healthy.',
+      title: '${Emojis.cat_cat_with_wry_smile} FeedCat ทำงานแล้ว',
+      body: 'FeedCat เริ่มการให้อาหารแมวของคุณแล้ว สามารถดูได้ที่กล้อง.',
       notificationLayout: NotificationLayout.Default,
     ),
-    // actionButtons: [
-    //   NotificationActionButton(
-    //     key: 'MARK_DONE',
-    //     label: 'Mark Done',
-    //   ),
-    // ],
+    actionButtons: [
+      NotificationActionButton(
+        key: '1',
+        label: 'Check',
+      ),
+    ],
+    schedule: NotificationCalendar(
+      hour: notificationSchedule.timeOfDay.hour,
+      minute: notificationSchedule.timeOfDay.minute,
+      second: 0,
+      millisecond: 0,
+      repeats: true,
+    ),
+   
+    
+
+  );
+}
+Future<void> createWaterReminderNotification2(
+    NotificationWeekAndTime notificationSchedule) async {
+      // RunBackgorude instance01 = RunBackgorude();
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 2,
+      channelKey: 'scheduled_channel',
+      title: '${Emojis.cat_cat_with_wry_smile} FeedCat ทำงานแล้ว',
+      body: 'FeedCat เริ่มการให้อาหารแมวของคุณแล้ว สามารถดูได้ที่กล้อง.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+    actionButtons: [
+      NotificationActionButton(
+        key: '2',
+        label: 'Check',
+      ),
+    ],
+    schedule: NotificationCalendar(
+      hour: notificationSchedule.timeOfDay.hour,
+      minute: notificationSchedule.timeOfDay.minute,
+      second: 0,
+      millisecond: 0,
+      repeats: true,
+    ),
+   
+    
+
+  );
+}
+Future<void> createWaterReminderNotification3(
+    NotificationWeekAndTime notificationSchedule) async {
+      // RunBackgorude instance01 = RunBackgorude();
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 3,
+      channelKey: 'scheduled_channel',
+      title: '${Emojis.cat_cat_with_wry_smile} FeedCat ทำงานแล้ว',
+      body: 'FeedCat เริ่มการให้อาหารแมวของคุณแล้ว สามารถดูได้ที่กล้อง.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+    actionButtons: [
+      NotificationActionButton(
+        key: '3',
+        label: 'Check',
+      ),
+    ],
+    schedule: NotificationCalendar(
+      hour: notificationSchedule.timeOfDay.hour,
+      minute: notificationSchedule.timeOfDay.minute,
+      second: 0,
+      millisecond: 0,
+      repeats: true,
+    ),
+   
+    
+
+  );
+}
+Future<void> createWaterReminderNotification4(
+    NotificationWeekAndTime notificationSchedule) async {
+      // RunBackgorude instance01 = RunBackgorude();
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 4,
+      channelKey: 'scheduled_channel',
+      title: '${Emojis.cat_cat_with_wry_smile} FeedCat ทำงานแล้ว',
+      body: 'FeedCat เริ่มการให้อาหารแมวของคุณแล้ว สามารถดูได้ที่กล้อง.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+    actionButtons: [
+      NotificationActionButton(
+        key: '4',
+        label: 'Check',
+      ),
+    ],
+    schedule: NotificationCalendar(
+      hour: notificationSchedule.timeOfDay.hour,
+      minute: notificationSchedule.timeOfDay.minute,
+      second: 0,
+      millisecond: 0,
+      repeats: true,
+    ),
+   
+    
+
+  );
+}
+Future<void> createWaterReminderNotification5(
+    NotificationWeekAndTime notificationSchedule) async {
+      // RunBackgorude instance01 = RunBackgorude();
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 5,
+      channelKey: 'scheduled_channel',
+      title: '${Emojis.cat_cat_with_wry_smile} FeedCat ทำงานแล้ว',
+      body: 'FeedCat เริ่มการให้อาหารแมวของคุณแล้ว สามารถดูได้ที่กล้อง.',
+      notificationLayout: NotificationLayout.Default,
+    ),
+    actionButtons: [
+      NotificationActionButton(
+        key: '5',
+        label: 'Check',
+      ),
+    ],
     schedule: NotificationCalendar(
       hour: notificationSchedule.timeOfDay.hour,
       minute: notificationSchedule.timeOfDay.minute,

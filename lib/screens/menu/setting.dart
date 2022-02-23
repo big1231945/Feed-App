@@ -1,6 +1,8 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:feed_app/screens/home.dart';
 import 'package:feed_app/utility/data_user.dart';
+import 'package:feed_app/utility/notifications.dart';
+import 'package:feed_app/utility/save_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,16 +12,25 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
+
+  final showTimeSet = ShowTimeSet();
 //Explicit
   Widget button5() {
     return RaisedButton(
-      color: Colors.cyan,
+      color: Colors.red,
       child: Text(
         'Logout',
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white,fontSize: 20),
       ),
       onPressed: () async {
         deleteUsernameData();
+        deleteUrlNetpie();
+        deleteWebAPI();
+        cancelScheduledNotifications();
+        deleteCam();
+        deleteValue();
+        final show = await showTimeSet.DeleteTimeSet();
+
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -33,10 +44,10 @@ class _SettingState extends State<Setting> {
 
   Widget button() {
     return RaisedButton(
-      color: Colors.cyan,
+      color: Colors.lightBlue,
       child: Text(
         'ปิดการแจ้งเตือน',
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white,fontSize: 20),
       ),
       onPressed:() => 
         AwesomeNotifications()
@@ -74,12 +85,30 @@ class _SettingState extends State<Setting> {
 //     ],
 //   ),
 // ),
-      body: Form(
+
+       body: SafeArea(
+          child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+        image: AssetImage('images/backgrund2.jpg'),
+        fit: BoxFit.cover),
+  ),
+              //     gradient: LinearGradient(
+              //   begin: Alignment.topCenter,
+              //   end: Alignment.bottomCenter,
+              //   colors: <Color>[
+              //     Colors.white,
+              //     Colors.yellow.shade200,
+              //   ],
+              // )),
+              child:  Form(
         child: ListView(
           padding: EdgeInsets.all(50.0),
           children: [button(), button5()],
         ),
       ),
+          )
+       )
     );
   }
 }
