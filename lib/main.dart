@@ -83,18 +83,19 @@ class noti extends MyApp {
         NotificationChannel(
           channelKey: 'basic_channel',
           channelName: 'Basic Notifications',
-          // defaultColor: Colors.teal,
+          defaultColor: Colors.cyan[300],
           importance: NotificationImportance.High,
           channelShowBadge: true,
         ),
         NotificationChannel(
           channelKey: 'scheduled_channel',
           channelName: 'Scheduled Notifications',
-          // defaultColor: Colors.teal,
+          defaultColor: Colors.cyan[300],
           // locked: true,
           importance: NotificationImportance.High,
-          // soundSource: 'resource://raw/res_custom_notification',
+          soundSource: 'resource://raw/res_custom_notification',
         ),
+        
       ],
     );
     AwesomeNotifications().createdStream.listen((notification) {

@@ -1,3 +1,4 @@
+import 'package:feed_app/screens/menu/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum ValueFeed { Value10, Value20, Value30,Value40 }
@@ -28,7 +29,7 @@ class SaveTimeSet {
     final String time3;
     final String time4;
     final String time5;
-    SaveTimeSet({required this.time1,required this.time2,required this.time3,required this.time4,required this.time5, });
+    SaveTimeSet({ required this.time1,required this.time2,required this.time3,required this.time4,required this.time5, });
 }
 class ShowTimeSet {
   Future saveTimeSet(SaveTimeSet saveTimeSet)async{
@@ -46,7 +47,11 @@ class ShowTimeSet {
     final time3 = pefs.getString('time3');
     final time4 = pefs.getString('time4');
     final time5 = pefs.getString('time5');
-    return SaveTimeSet(time1: time1!, time2: time2!, time3: time3!, time4: time4!, time5: time5!);
+    return SaveTimeSet(time1: time1!, 
+    time2: time2!, 
+    time3: time3!, 
+    time4: time4!, 
+    time5: time5!);
   }
   Future DeleteTimeSet()async{
     final pefs = await SharedPreferences.getInstance();

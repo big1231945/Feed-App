@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:cron/cron.dart';
 import 'package:feed_app/utility/data_user.dart';
 import 'package:feed_app/utility/notifications.dart';
 import 'package:feed_app/utility/save_state.dart';
@@ -26,8 +27,9 @@ class _autoTimeState extends State<autoTime> {
   final _preferencesService = PreferencesSettingsVal();
   final showTimeSet = ShowTimeSet();
 
-  testtime() {
-    print(DateTime.now());
+  testtime() async {
+    final show = await showTimeSet.getTimeSet();
+    return show.time1;
   }
 
   TimeOfDay stringToTimeOfDay(String tod) {
@@ -35,98 +37,89 @@ class _autoTimeState extends State<autoTime> {
     return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
-  runAutoTime1() async {
-    final show = await showTimeSet.getTimeSet();
-    if (DateTime.now().hour == stringToTimeOfDay(show.time1).hour &&
-        DateTime.now().minute == stringToTimeOfDay(show.time1).minute &&
-        DateTime.now().second == 0) {
-          
-          _usernameSeve = await loadUsernameData();
-          await remeber();
-      print('work');
-      publish(await loadValue());
-      
-    }
-    
-  }
-    runAutoTime2() async {
-    final show = await showTimeSet.getTimeSet();
-    if (DateTime.now().hour == stringToTimeOfDay(show.time2).hour &&
-        DateTime.now().minute == stringToTimeOfDay(show.time2).minute &&
-        DateTime.now().second == 0) {
-          _usernameSeve = await loadUsernameData();
-      print('work');
-      publish(await loadValue());
-    }
-    ;
-  }
-    runAutoTime3() async {
-    final show = await showTimeSet.getTimeSet();
-    if (DateTime.now().hour == stringToTimeOfDay(show.time3).hour &&
-        DateTime.now().minute == stringToTimeOfDay(show.time3).minute &&
-        DateTime.now().second == 0) {
-          _usernameSeve = await loadUsernameData();
-      print('work');
-      publish(await loadValue());
-    }
-    ;
-  }
-    runAutoTime4() async {
-    final show = await showTimeSet.getTimeSet();
-    if (DateTime.now().hour == stringToTimeOfDay(show.time4).hour &&
-        DateTime.now().minute == stringToTimeOfDay(show.time4).minute &&
-        DateTime.now().second == 0) {
-          _usernameSeve = await loadUsernameData();
-      print('work');
-      publish(await loadValue());
-    }
-    ;
-  }
-    runAutoTime5() async {
-    final show = await showTimeSet.getTimeSet();
-    if (DateTime.now().hour == stringToTimeOfDay(show.time5).hour &&
-        DateTime.now().minute == stringToTimeOfDay(show.time5).minute &&
-        DateTime.now().second == 0) {
-          _usernameSeve = await loadUsernameData();
-      print('work');
-      publish(await loadValue());
-    }
-    ;
-  }
+  // runAutoTime1() async {
+  //   final show = await showTimeSet.getTimeSet();
+  //   if (DateTime.now().hour == stringToTimeOfDay(show.time1).hour &&
+  //       DateTime.now().minute == stringToTimeOfDay(show.time1).minute &&
+  //       DateTime.now().second == 0) {
+  //     _usernameSeve = await loadUsernameData();
+  //     // await remeber();
+  //     print('work');
+  //     publish(await loadValue());
+  //   }
+  // }
 
-      
+  // runAutoTime2() async {
+  //   final show = await showTimeSet.getTimeSet();
+  //   if (DateTime.now().hour == stringToTimeOfDay(show.time2).hour &&
+  //       DateTime.now().minute == stringToTimeOfDay(show.time2).minute &&
+  //       DateTime.now().second == 0) {
+  //     _usernameSeve = await loadUsernameData();
+  //     print('work');
+  //     publish(await loadValue());
+  //   }
+  //   ;
+  // }
 
-     
+  // runAutoTime3() async {
+  //   final show = await showTimeSet.getTimeSet();
+  //   if (DateTime.now().hour == stringToTimeOfDay(show.time3).hour &&
+  //       DateTime.now().minute == stringToTimeOfDay(show.time3).minute &&
+  //       DateTime.now().second == 0) {
+  //     _usernameSeve = await loadUsernameData();
+  //     print('work');
+  //     publish(await loadValue());
+  //   }
+  //   ;
+  // }
+
+  // runAutoTime4() async {
+  //   final show = await showTimeSet.getTimeSet();
+  //   if (DateTime.now().hour == stringToTimeOfDay(show.time4).hour &&
+  //       DateTime.now().minute == stringToTimeOfDay(show.time4).minute &&
+  //       DateTime.now().second == 0) {
+  //     _usernameSeve = await loadUsernameData();
+  //     print('work');
+  //     publish(await loadValue());
+  //   }
+  //   ;
+  // }
+
+  // runAutoTime5() async {
+  //   final show = await showTimeSet.getTimeSet();
+  //   if (DateTime.now().hour == stringToTimeOfDay(show.time5).hour &&
+  //       DateTime.now().minute == stringToTimeOfDay(show.time5).minute &&
+  //       DateTime.now().second == 0) {
+  //     _usernameSeve = await loadUsernameData();
+  //     print('work');
+  //     publish(await loadValue());
+  //   }
+  //   ;
+  // }
 
   @override
   void initState() {
     // Timer _timer;
     // DateTime a;
-     // runs every 1 second
-      _timer =
-      Timer.periodic(const Duration(seconds: 1), (timer) {
-        runAutoTime1();
-        runAutoTime2();
-        runAutoTime3();
-        runAutoTime4();
-        runAutoTime5();
-      });
-     
+    // runs every 1 second
 
-
-
+    // _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
+    //   runAutoTime1();
+    //   // runAutoTime2();
+    //   // runAutoTime3();
+    //   // runAutoTime4();
+    //   // runAutoTime5();
+    // });
 
     setState(() {
       now = DateTime.now();
-      
     });
+    remeber();
 
     super.initState();
-    
+
     _populateFields();
     showTimeState();
-
-    remeber();
 
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
@@ -185,28 +178,23 @@ class _autoTimeState extends State<autoTime> {
 
   var _usernameSeve;
 
-  final DatabaseReference db = FirebaseDatabase(
-          databaseURL:
-              'https://feedapp2-default-rtdb.asia-southeast1.firebasedatabase.app')
-      .reference();
   var mapdata;
   var mapda;
   late String set_value = 'auto cat feed 10';
 
 //Method
-
-  remeber() async{
-      await db
-          .child('/user/run/$_usernameSeve')
-          .once()
-          .then((DataSnapshot snapshot) {
-        mapda = snapshot.value;
-      }).onError((error, stackTrace) => null);
-      print(_usernameSeve);
-      // print(mapda);
-      print('goooooo $mapda');
-      incrementWebAPI(mapda);
-    
+  remeber() async {
+    _usernameSeve = await loadUsernameData();
+    await db
+        .child('/user/run/$_usernameSeve')
+        .once()
+        .then((DataSnapshot snapshot) {
+      mapda = snapshot.value;
+    }).onError((error, stackTrace) => null);
+    print(_usernameSeve);
+    // print(mapda);
+    print('goooooo $mapda');
+    incrementWebAPI(mapda);
   }
 
 //Explicit
@@ -234,7 +222,6 @@ class _autoTimeState extends State<autoTime> {
 //Explicit
 
 //  late NETPIE2020 netpie2020;
-
 
   Widget button55() {
     return RaisedButton(
@@ -340,11 +327,24 @@ class _autoTimeState extends State<autoTime> {
           setState(() {
             Time1 = pickedSchedule.timeOfDay.format(context);
             showTime();
+
+            
           });
+          TimeOfDay _time = TimeOfDay(
+                hour: int.parse(Time1.split(":")[0]),
+                minute: int.parse(Time1.split(":")[1].split(" ")[0]));
+          cron.schedule(
+              Schedule(
+                  hours: _time.hour,
+                  minutes: _time.minute),
+              () async=> publish(await loadValue())
+              );
         }
       },
     );
   }
+
+  final cron = Cron();
 
   Widget button2() {
     return RaisedButton(
@@ -364,6 +364,17 @@ class _autoTimeState extends State<autoTime> {
             Time2 = pickedSchedule.timeOfDay.format(context);
             showTime();
           });
+          TimeOfDay _time = TimeOfDay(
+                hour: int.parse(Time2.split(":")[0]),
+                minute: int.parse(Time2.split(":")[1].split(" ")[0]));
+          cron.schedule(
+              Schedule(
+                  hours: _time.hour,
+                  minutes: _time.minute),
+              () async=> publish(await loadValue())
+              );
+
+              
         }
       },
     );
@@ -387,6 +398,15 @@ class _autoTimeState extends State<autoTime> {
             Time3 = pickedSchedule.timeOfDay.format(context);
             showTime();
           });
+          TimeOfDay _time = TimeOfDay(
+                hour: int.parse(Time3.split(":")[0]),
+                minute: int.parse(Time3.split(":")[1].split(" ")[0]));
+          cron.schedule(
+              Schedule(
+                  hours: _time.hour,
+                  minutes: _time.minute),
+              () async=> publish(await loadValue())
+              );
         }
       },
     );
@@ -410,6 +430,15 @@ class _autoTimeState extends State<autoTime> {
             Time4 = pickedSchedule.timeOfDay.format(context);
             showTime();
           });
+          TimeOfDay _time = TimeOfDay(
+                hour: int.parse(Time4.split(":")[0]),
+                minute: int.parse(Time4.split(":")[1].split(" ")[0]));
+          cron.schedule(
+              Schedule(
+                  hours: _time.hour,
+                  minutes: _time.minute),
+              () async=> publish(await loadValue())
+              );
         }
       },
     );
@@ -433,6 +462,15 @@ class _autoTimeState extends State<autoTime> {
             Time5 = pickedSchedule.timeOfDay.format(context);
             showTime();
           });
+          TimeOfDay _time = TimeOfDay(
+                hour: int.parse(Time5.split(":")[0]),
+                minute: int.parse(Time5.split(":")[1].split(" ")[0]));
+          cron.schedule(
+              Schedule(
+                  hours: _time.hour,
+                  minutes: _time.minute),
+              () async=> publish(await loadValue())
+              );
         }
       },
     );
@@ -448,6 +486,7 @@ class _autoTimeState extends State<autoTime> {
       onPressed: () async {
         final show = await showTimeSet.DeleteTimeSet();
         cancelScheduledNotifications();
+        cron.close();
         setState(() {
           show;
           showTimeState();
@@ -639,8 +678,8 @@ class _autoTimeState extends State<autoTime> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // button55(),
-                       button6()],
+                        // button55(), 
+                      button6()],
                     ),
                   ],
                 ),

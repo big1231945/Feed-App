@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:cron/cron.dart';
 import 'package:feed_app/screens/home.dart';
 import 'package:feed_app/utility/data_user.dart';
 import 'package:feed_app/utility/notifications.dart';
@@ -12,7 +13,7 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-
+final cron = Cron();
   final showTimeSet = ShowTimeSet();
 //Explicit
   Widget button5() {
@@ -29,6 +30,7 @@ class _SettingState extends State<Setting> {
         cancelScheduledNotifications();
         deleteCam();
         deleteValue();
+        cron.close();
         final show = await showTimeSet.DeleteTimeSet();
 
         Navigator.pushAndRemoveUntil(
