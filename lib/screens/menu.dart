@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:feed_app/screens/menu/advice.dart';
 import 'package:feed_app/screens/menu/carmera.dart';
+import 'package:feed_app/screens/menu/manual.dart';
 import 'package:feed_app/screens/menu/setting.dart';
 import 'package:feed_app/screens/menu/auto_time.dart';
 import 'package:feed_app/screens/menu/start.dart';
@@ -172,7 +173,7 @@ await remeber66();
     return RecomendPlantCard(
       image: "images/4185489.png",
       title: "คำแนะนำ",
-      country: "คู่มือ",
+      country: "ดูแลอย่างถูกวิธี",
       press: () {
         MaterialPageRoute materialPageRoute =
             MaterialPageRoute(builder: (BuildContext context) => Advice());
@@ -247,6 +248,19 @@ await remeber66();
       title: "อื่นๆ",
       country: "ลฯล",
       press: () {},
+    );
+  }
+
+    Widget manu7() {
+    return RecomendPlantCard(
+      image: "images/1321639.png",
+      title: "คู่มือ",
+      country: "วิธีใช้งานแอป",
+      press: () {
+        MaterialPageRoute materialPageRoute =
+            MaterialPageRoute(builder: (BuildContext context) => Manual());
+        Navigator.of(context).push(materialPageRoute);
+      },
     );
   }
   @override
@@ -341,7 +355,7 @@ await remeber66();
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [manu(), manu2()],
+                        children: [manu(), manu7()],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -349,7 +363,7 @@ await remeber66();
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [manu4()])
+                          children: [manu4(),manu2()])
                     ],
                   ),
                 ))));

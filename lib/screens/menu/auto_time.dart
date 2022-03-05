@@ -165,7 +165,7 @@ class _autoTimeState extends State<autoTime> {
   void dispose() {
     AwesomeNotifications().actionSink.close();
     AwesomeNotifications().createdSink.close();
-    _timer.cancel();
+    // _timer.cancel();
     super.dispose();
   }
 
@@ -309,7 +309,7 @@ class _autoTimeState extends State<autoTime> {
       Time5 = show.time5;
     });
   }
-
+  final cron = Cron();
   Widget button1() {
     return RaisedButton(
       color: Colors.green[400],
@@ -327,24 +327,18 @@ class _autoTimeState extends State<autoTime> {
           setState(() {
             Time1 = pickedSchedule.timeOfDay.format(context);
             showTime();
-
-            
           });
           TimeOfDay _time = TimeOfDay(
-                hour: int.parse(Time1.split(":")[0]),
-                minute: int.parse(Time1.split(":")[1].split(" ")[0]));
-          cron.schedule(
-              Schedule(
-                  hours: _time.hour,
-                  minutes: _time.minute),
-              () async=> publish(await loadValue())
-              );
+              hour: int.parse(Time1.split(":")[0]),
+              minute: int.parse(Time1.split(":")[1].split(" ")[0]));
+          cron.schedule(Schedule(hours: _time.hour, minutes: _time.minute),
+              () async => publish(await loadValue()));
         }
       },
     );
   }
 
-  final cron = Cron();
+
 
   Widget button2() {
     return RaisedButton(
@@ -365,16 +359,10 @@ class _autoTimeState extends State<autoTime> {
             showTime();
           });
           TimeOfDay _time = TimeOfDay(
-                hour: int.parse(Time2.split(":")[0]),
-                minute: int.parse(Time2.split(":")[1].split(" ")[0]));
-          cron.schedule(
-              Schedule(
-                  hours: _time.hour,
-                  minutes: _time.minute),
-              () async=> publish(await loadValue())
-              );
-
-              
+              hour: int.parse(Time2.split(":")[0]),
+              minute: int.parse(Time2.split(":")[1].split(" ")[0]));
+          cron.schedule(Schedule(hours: _time.hour, minutes: _time.minute),
+              () async => publish(await loadValue()));
         }
       },
     );
@@ -399,14 +387,10 @@ class _autoTimeState extends State<autoTime> {
             showTime();
           });
           TimeOfDay _time = TimeOfDay(
-                hour: int.parse(Time3.split(":")[0]),
-                minute: int.parse(Time3.split(":")[1].split(" ")[0]));
-          cron.schedule(
-              Schedule(
-                  hours: _time.hour,
-                  minutes: _time.minute),
-              () async=> publish(await loadValue())
-              );
+              hour: int.parse(Time3.split(":")[0]),
+              minute: int.parse(Time3.split(":")[1].split(" ")[0]));
+          cron.schedule(Schedule(hours: _time.hour, minutes: _time.minute),
+              () async => publish(await loadValue()));
         }
       },
     );
@@ -431,14 +415,10 @@ class _autoTimeState extends State<autoTime> {
             showTime();
           });
           TimeOfDay _time = TimeOfDay(
-                hour: int.parse(Time4.split(":")[0]),
-                minute: int.parse(Time4.split(":")[1].split(" ")[0]));
-          cron.schedule(
-              Schedule(
-                  hours: _time.hour,
-                  minutes: _time.minute),
-              () async=> publish(await loadValue())
-              );
+              hour: int.parse(Time4.split(":")[0]),
+              minute: int.parse(Time4.split(":")[1].split(" ")[0]));
+          cron.schedule(Schedule(hours: _time.hour, minutes: _time.minute),
+              () async => publish(await loadValue()));
         }
       },
     );
@@ -463,14 +443,10 @@ class _autoTimeState extends State<autoTime> {
             showTime();
           });
           TimeOfDay _time = TimeOfDay(
-                hour: int.parse(Time5.split(":")[0]),
-                minute: int.parse(Time5.split(":")[1].split(" ")[0]));
-          cron.schedule(
-              Schedule(
-                  hours: _time.hour,
-                  minutes: _time.minute),
-              () async=> publish(await loadValue())
-              );
+              hour: int.parse(Time5.split(":")[0]),
+              minute: int.parse(Time5.split(":")[1].split(" ")[0]));
+          cron.schedule(Schedule(hours: _time.hour, minutes: _time.minute),
+              () async => publish(await loadValue()));
         }
       },
     );
@@ -510,22 +486,8 @@ class _autoTimeState extends State<autoTime> {
 
   Widget raioVal() {
     return RadioListTile(
-        title: Text('10 กรัม'),
-        value: ValueFeed.Value10,
-        groupValue: _selectedValueFeed,
-        onChanged: (ValueFeed? newValue) {
-          incrementValue('auto cat feed 10');
-          setState(() {
-            _selectedValueFeed = newValue!;
-            _saveSettings();
-          });
-        });
-  }
-
-  Widget raioVal2() {
-    return RadioListTile(
         title: Text('20 กรัม'),
-        value: ValueFeed.Value20,
+        value: ValueFeed.Value10,
         groupValue: _selectedValueFeed,
         onChanged: (ValueFeed? newValue) {
           incrementValue('auto cat feed 20');
@@ -536,13 +498,27 @@ class _autoTimeState extends State<autoTime> {
         });
   }
 
+  Widget raioVal2() {
+    return RadioListTile(
+        title: Text('40 กรัม'),
+        value: ValueFeed.Value20,
+        groupValue: _selectedValueFeed,
+        onChanged: (ValueFeed? newValue) {
+          incrementValue('auto cat feed 40');
+          setState(() {
+            _selectedValueFeed = newValue!;
+            _saveSettings();
+          });
+        });
+  }
+
   Widget raioVal3() {
     return RadioListTile(
-        title: Text('30 กรัม'),
+        title: Text('70 กรัม'),
         value: ValueFeed.Value30,
         groupValue: _selectedValueFeed,
         onChanged: (ValueFeed? newValue) {
-          incrementValue('auto cat feed 30');
+          incrementValue('auto cat feed 70');
           setState(() {
             _selectedValueFeed = newValue!;
             _saveSettings();
@@ -552,11 +528,11 @@ class _autoTimeState extends State<autoTime> {
 
   Widget raioVal4() {
     return RadioListTile(
-        title: Text('40 กรัม'),
+        title: Text('90 กรัม'),
         value: ValueFeed.Value40,
         groupValue: _selectedValueFeed,
         onChanged: (ValueFeed? newValue) {
-          incrementValue('auto cat feed 40');
+          incrementValue('auto cat feed 90');
           setState(() {
             _selectedValueFeed = newValue!;
             _saveSettings();
@@ -678,8 +654,9 @@ class _autoTimeState extends State<autoTime> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // button55(), 
-                      button6()],
+                        // button55(),
+                        button6()
+                      ],
                     ),
                   ],
                 ),

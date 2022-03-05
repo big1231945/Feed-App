@@ -1,60 +1,48 @@
 import 'package:flutter/material.dart';
 
-class Advice extends StatefulWidget {
+class Manual extends StatefulWidget {
   @override
-  _AdviceState createState() => _AdviceState();
+  _ManualState createState() => _ManualState();
 }
 
-class _AdviceState extends State<Advice> {
+class _ManualState extends State<Manual> {
 //Explicit
 
-  Widget image1() {
-    return InteractiveViewer(
-        child: Image.asset(
-      'images/advice.png',
-      fit: BoxFit.fill,
-    ));
-  }
+
 
   Widget image2() {
-    return InteractiveViewer(
-        child: Image.asset(
-      'images/A2.png',
+    return Image.asset(
+      'images/1.jpg',
       fit: BoxFit.fill,
-    ));
+    );
   }
 
   Widget image3() {
-    return InteractiveViewer(
-        child: Image.asset(
-      'images/A3.png',
+    return Image.asset(
+      'images/2.jpg',
       fit: BoxFit.fill,
-    ));
+    );
   }
 
   Widget image4() {
-    return InteractiveViewer(
-      child: Image.asset(
-        'images/A4.png',
-        fit: BoxFit.fill,
-      ),
+    return Image.asset(
+      'images/3.jpg',
+      fit: BoxFit.fill,
     );
   }
 
   Widget image5() {
-    return InteractiveViewer(
-        child: Image.asset(
-      'images/A5.png',
+    return Image.asset(
+      'images/4.jpg',
       fit: BoxFit.fill,
-    ));
+    );
   }
 
   Widget image6() {
-    return InteractiveViewer(
-        child: Image.asset(
-      'images/A6.png',
+    return Image.asset(
+      'images/5.jpg',
       fit: BoxFit.fill,
-    ));
+    );
   }
 
   Widget image7() {
@@ -135,15 +123,21 @@ class _AdviceState extends State<Advice> {
             //     image: AssetImage('images/backgrund3.jpg'), fit: BoxFit.cover),
           ),
           child: ListView(
+            padding: EdgeInsets.all(50.0),
             children: [
               Column(
                 children: [
-                  image1(),
                   image2(),
                   image3(),
                   image4(),
                   image5(),
-                  image6()
+                  image6(),
+                  image7(),
+                  image8(),
+                  image9(),
+                  image10(),
+                  image11(),
+                  image12()
                 ],
               )
             ],

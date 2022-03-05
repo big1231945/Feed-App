@@ -92,7 +92,7 @@ final cron = Cron();
           child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-        image: AssetImage('images/backgrund2.jpg'),
+        image: AssetImage('images/backgrund3.jpg'),
         fit: BoxFit.cover),
   ),
               //     gradient: LinearGradient(
@@ -105,7 +105,8 @@ final cron = Cron();
               // )),
               child:  Form(
         child: ListView(
-          padding: EdgeInsets.all(50.0),
+          padding: EdgeInsets.all(100.0),
+          
           children: [button(), button5()],
         ),
       ),

@@ -110,24 +110,6 @@ class _StartState extends State<Start> {
     return RaisedButton(
       color: Colors.cyan,
       child: Text(
-        'ให้อาหาร 10 กรัม',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () async {
-        // netpie2020
-        //   .publish('servo0',_rESTAPIauth).then((res) {
-        //   });
-        _usernameSeve = await loadUsernameData();
-        await remeber();
-        publish('auto cat feed 10');
-      },
-    );
-  }
-
-  Widget button2() {
-    return RaisedButton(
-      color: Colors.cyan,
-      child: Text(
         'ให้อาหาร 20 กรัม',
         style: TextStyle(color: Colors.white),
       ),
@@ -142,25 +124,7 @@ class _StartState extends State<Start> {
     );
   }
 
-  Widget button3() {
-    return RaisedButton(
-      color: Colors.cyan,
-      child: Text(
-        'ให้อาหาร 30 กรัม',
-        style: TextStyle(color: Colors.white),
-      ),
-      onPressed: () async {
-        // netpie2020
-        //   .publish('servo0',_rESTAPIauth).then((res) {
-        //   });
-        _usernameSeve = await loadUsernameData();
-        await remeber();
-        publish('auto cat feed 30');
-      },
-    );
-  }
-
-  Widget button4() {
+  Widget button2() {
     return RaisedButton(
       color: Colors.cyan,
       child: Text(
@@ -178,11 +142,11 @@ class _StartState extends State<Start> {
     );
   }
 
-  Widget button5() {
+  Widget button3() {
     return RaisedButton(
       color: Colors.cyan,
       child: Text(
-        'ให้อาหาร 50 กรัม',
+        'ให้อาหาร 70 กรัม',
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () async {
@@ -191,7 +155,43 @@ class _StartState extends State<Start> {
         //   });
         _usernameSeve = await loadUsernameData();
         await remeber();
-        publish('auto cat feed 50');
+        publish('auto cat feed 70');
+      },
+    );
+  }
+
+  Widget button4() {
+    return RaisedButton(
+      color: Colors.cyan,
+      child: Text(
+        'ให้อาหาร 90 กรัม',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // netpie2020
+        //   .publish('servo0',_rESTAPIauth).then((res) {
+        //   });
+        _usernameSeve = await loadUsernameData();
+        await remeber();
+        publish('auto cat feed 90');
+      },
+    );
+  }
+
+  Widget button5() {
+    return RaisedButton(
+      color: Colors.cyan,
+      child: Text(
+        'ให้อาหาร 130 กรัม',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () async {
+        // netpie2020
+        //   .publish('servo0',_rESTAPIauth).then((res) {
+        //   });
+        _usernameSeve = await loadUsernameData();
+        await remeber();
+        publish('auto cat feed 130');
       },
     );
   }
